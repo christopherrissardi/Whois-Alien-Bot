@@ -1,0 +1,5 @@
+discord~=1.7.3
+requests~=2.26.0
+googletrans~=3.1.0a0
+tk==0.1.0
+turtle==0.0.1
