@@ -10,6 +10,30 @@ O principal objetivo deste projeto é semelhante aos anteriores: permitir a cons
 
 Além das funcionalidades mencionadas, o Bot Whois Alien se destaca por sua capacidade de realizar análises detalhadas de segurança, como varreduras de portas e traceroute, que são úteis para identificar vulnerabilidades em sistemas. Essas ferramentas não apenas ampliam o escopo de utilidade do bot, mas também o posicionam como uma ferramenta versátil para administradores de sistemas e entusiastas de segurança cibernética dentro do Discord.
 
+
+# Termos de uso e responsabilidades
+
+Dentro do nosso bot temos uma opção dedicada dos termos de uso e responsabilidades dos usuários para com o nosso servidor, nosso objetivo desde o início é possuir um bot próprio/único e totalmente autônomo dentro de nosso ambiente. Com a criação do parâmetro citado, é possível observar que nos importamos com a nossa comunidade e visamos obter um local limpo, integro e com regras passiva/ativa a serem seguidas. 
+
+Usando o comando `./termos`, é possível visualizar os termos propagados por nós, para que tenhamos um controle mais absoluto em relação as nossas informações. 
+
+Vale ressaltar que constantemente estamos pensando em novos termos e responsabilidades para serem atualizados. Futuramente será implementado novas políticas de uso, de tal forma que não prejudique os usuários, muito menos vise prejudicar entidades públicas/privadas a qual parte interessarem. 
+
+
+---
+
+# Direitos reservados
+
+
+É fundamental ressaltar que nosso projeto foi construído totalmente do zero, sendo em ideias, funcionalidades, ferramentas e outras objeções. Dedicamos tempo, esforço e inúmeros testes, tivemos que lidar com vários erros, bugs, problemas de código, problemas de API, falhas em consumir dados externos e outros vários fatores que quase impossibilitaram a criação do mesmo, mas com muita dedicação chegamos em um resultado extremamente positivo.
+
+Ficamos genuinamente satisfeitos em saber que nosso projeto pode servir como fonte de inspiração para outros desenvolvedores que desejam explorar e expandir o universo dos bots. No entanto, é de extrema importância para nós que qualquer uso do nosso projeto como base seja conduzido com integridade e respeito. Pedimos gentilmente que os interessados evitem copiar, plagiar ou depreciar de qualquer forma o trabalho que dedicamos com tanto empenho e dedicação.
+
+Acreditamos firmemente na importância de um desenvolvimento ético e responsável. Encorajamos que novos projetos sejam construídos com originalidade, respeitando os direitos de propriedade intelectual e reconhecendo a fonte de inspiração quando apropriado. 
+
+
+---
+
 # Comandos e Funcionalidades do Bot
 
 Abaixo será disponibilizado a lista de todos os comandos e suas funcionalidades. Para visualizar a opção mais resumida do código, basta digitar dentro do servidor `./ajuda` e o bot irá retornar todas as opções disponíveis.
