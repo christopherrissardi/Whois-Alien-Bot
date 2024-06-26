@@ -375,7 +375,10 @@ Abaixo, estou disponibilizando todos os locais e fontes de onde estão sendo ret
 | Gerador de pessoas          | [Invertexto](https://api.invertexto.com/)                         |
 | Gerador de cartão           | [Invertexto](https://api.invertexto.com/)                         |
 | Gerador de CPF              | [Invertexto](https://api.invertexto.com/)                         |
-| Tradutor                    | [Python Library](https://pypi.org/project/googletrans/)           |
+| Gerador de Telefone         | [Invertexto](https://api.invertexto.com/)                         |
+| Gerador de Username         | [Invertexto](https://api.invertexto.com/)                         |
+| Gerador de E-mail           | [Invertexto](https://api.invertexto.com/)                         |
+| Tradutor de texto           | [Python Library](https://pypi.org/project/googletrans/)           |
 | Inteligência artificial     | [gpt4free](https://github.com/xtekky/gpt4free)                    |
 
 
