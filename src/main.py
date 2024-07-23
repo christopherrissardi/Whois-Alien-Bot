@@ -138,19 +138,26 @@ async def on_member_join(member):
 
     if welcome:
 
-        embed = discord.Embed(title='', description=f'A partir de agora, você terá alguns requisitos a serem cumpridos para que você possa ser um membro em nosso servidor. Segue abaixo os requisitos e leia atentamente as regras do servidor em <#{913138175520673812}> e após isso, providencie todos os documentos e envie para o Dono do servidor <@{589502565243289612}>.')
+        embed = discord.Embed(title='Olá, usuário! Seja muito bem vindo ao nosso servidor!', description=f'A partir de agora, você terá alguns requisitos a serem cumpridos para que você possa ser um membro em nosso servidor. Segue abaixo os requisitos')
 
-        embed.add_field(name="`Requisito 1`", value="2 (duas) cópias do comprovante de residência", inline=False)
-        embed.add_field(name="`Requisito 2`", value="1 (uma) cópia da escritura do terreno ou do imóvel reconhecida em cartórioㅤㅤ", inline=False)
-        embed.add_field(name="`Requisito 3`", value="1 (uma) copia do RGㅤㅤ", inline=False)
-        embed.add_field(name="`Requisito 4`", value="1 (uma) foto 3x4 recenteㅤㅤ", inline=False)
-        embed.add_field(name="`Requisito 5`", value="3 (três) ter pelo menos 3 gramas de iceㅤㅤ", inline=False)
-        embed.add_field(name="`Requisito 6`", value="Ter CPF com situação regular na Receita Federal", inline=False)
-        embed.add_field(name="`Requisito 7`", value="Ter conta no Serasa com mais de 30 dias de criaçãoㅤㅤ", inline=False)
-        embed.add_field(name="", value="`ESSES SÃO NOSSOS REQUISITOS PARA QUE VOCÊ POSSA PARTICIPAR DO SERVIDOR, CASO NÃO CUMPRA OS REQUISITOS E SEJA PEGO, SERÁ BANIDO! NENHUMA JUSTIFICATIVA SERÁ TOLERADA`", inline=False)
-        embed.add_field(name="OBS:", value='Antes que alguém leve isso a sério, é apenas brincadeira kkkkkk', inline=False)
-        embed.set_image(url='https://i.imgur.com/GAw2sJ4.jpg')
-        embed.set_author(name='Olá, usuário! Seja muito bem vindo ao nosso servidor!', icon_url='')
+        embed.add_field(name="\n\n", value="\n\n", inline=False)        
+        embed.add_field(name="Requisitos Importântes:", value="", inline=False) 
+        embed.add_field(name="\n\n", value="\n\n", inline=False)        
+        embed.add_field(name="Requisito 1", value=f"Leia atentamente canal de <#{913138175520673812}>. É de extrema importância que você leia atentamente as regras e os termos!", inline=False)
+        embed.add_field(name="Requisito 2", value=f"A opinião do <@{589502565243289612}> sempre prevalecerá! se ele dizer não, é não!", inline=False)
+        embed.add_field(name="\n\n", value="\n\n", inline=False)        
+
+        embed.add_field(name="Outros requisitos:", value="", inline=False)        
+        embed.add_field(name="\n\n", value="\n\n", inline=False)        
+
+        embed.add_field(name="Requisito 3", value="2 (duas) cópias do comprovante de residência", inline=False)
+        embed.add_field(name="Requisito 4", value="1 (uma) cópia da escritura do terreno ou do imóvel reconhecida em cartórioㅤㅤ", inline=False)
+        embed.add_field(name="Requisito 5", value="1 (uma) copia do RGㅤㅤ", inline=False)
+        embed.add_field(name="Requisito 6", value="1 (uma) foto 3x4 recenteㅤㅤ", inline=False)
+        embed.add_field(name="Requisito 7", value="Ter CPF com situação regular na Receita Federal", inline=False)
+        embed.add_field(name="Requisito 8", value="Ter conta no Serasa com mais de 30 dias de criaçãoㅤㅤ", inline=False)        
+        embed.add_field(name="", value="Lembrando, antes de tudo sempre tenha senso de humor e senso de dissernimento! Nada acima é verdadeiro a não ser os 2 primeiros requisitos!", inline=False)        
+        embed.set_image(url='https://i.imgur.com/yInAO6g.gif')
         embed.set_footer(text='Whois Alien © All Rights Reserved', icon_url='')
         
         role = member.guild.get_role(913150428907184149)
@@ -158,30 +165,6 @@ async def on_member_join(member):
             await member.add_roles(role)
 
         await welcome.send(embed=embed)
-
-
-@client.command()
-async def termos(ctx):
-
-    embed = discord.Embed(title='ㅤㅤㅤTermos e Responsabilidades - Whois Alienㅤㅤㅤ')
-    embed.add_field(name="", value='', inline=False)
-
-    embed.add_field(name="1. Comunidade Inclusiva e Todos São Bem-Vindosㅤ", value='O Bot de Discord Whois Alien se esforça para criar um ambiente inclusivo onde todos os usuários são bem-vindos e respeitados. Não toleramos qualquer forma de discriminação com base em raça, cor, religião, identidade de gênero, orientação sexual, deficiência ou qualquer outra característica protegida por lei. \n\n', inline=False)
-    embed.add_field(name="2. Conformidade com a LGPD e Proteção de Dados", value='As consultas de dados realizadas pelo Bot de Discord Whois Alien estão em estrita conformidade com a Lei Geral de Proteção de Dados (LGPD). Isso significa que:\n\n             - Os dados coletados são utilizados apenas para os fins específicos para os quais foram autorizados.\n\n             - Os usuários têm o direito de acessar, corrigir ou excluir seus dados pessoais, conforme previsto pela LGPD.', inline=False)
-    embed.add_field(name="3. Uso Indevido das Consultas", value='O criador do Bot de Discord Whois Alien não é responsável pelo uso indevido das consultas realizadas pela ferramenta. Os participantes do servidor também são orientados a usar as informações obtidas de maneira ética e legal. Qualquer uso indevido é estritamente proibido e não reflete a intenção ou responsabilidade do criador ou dos participantes do servidor.', inline=False)
-    embed.add_field(name="4. Dados Gerados e Coincidências", value='Dados gerados pelo Bot de Discord Whois Alien que possam coincidir com informações reais são puramente coincidência. O bot é projetado para fornecer informações gerais baseadas em dados disponíveis publicamente e não garante a precisão ou exatidão das informações fornecidas.', inline=False)
-    embed.add_field(name="5. Uso Consciente e Ético da Ferramenta", value='Os usuários são incentivados a usar o Bot de Discord Whois Alien de maneira consciente e ética. Isso inclui:\n\n             - Não utilizar a ferramenta para atividades ilegais ou ilícitas.\n\n             - Respeitar os direitos de privacidade de terceiros.\n\n             - Não realizar consultas em larga escala que possam sobrecarregar os sistemas ou violar os termos de serviço de terceiros.', inline=False)
-    embed.add_field(name="6. Consequências do Uso Indevido", value='Qualquer uso indevido do Bot de Discord Whois Alien resultará em medidas disciplinares, incluindo, mas não limitado a, banimento permanente do servidor e revogação do acesso à ferramenta. A equipe de moderação se reserva o direito de tomar ações apropriadas para manter a integridade e a segurança do ambiente do servidor.', inline=False)
-    embed.add_field(name="", value='', inline=False)
-    embed.add_field(name="Outros Detalhes e Informações Importantes", value='', inline=False)    
-    embed.add_field(name="", value='\n\n- **Atualizações e Mudanças**: O Bot de Discord Whois Alien pode ser atualizado periodicamente para melhorar funcionalidades e segurança. Os usuários serão informados sobre quaisquer mudanças significativas que possam afetar o uso da ferramenta.\n\n             - **Suporte e Contato**: Para dúvidas, suporte ou relatar problemas, os usuários podem entrar em contato com o dono do servidor, conforme as instruções fornecidas.', inline=False)    
-    embed.add_field(name="", value='Estes termos e responsabilidades visam garantir um ambiente seguro, ético e responsável para todos os usuários que interagem com o Bot de Discord Whois Alien.', inline=False)
-    embed.add_field(name="", value=f'Caso verifique que seus dados estão presentes na ferramenta e você tenha interesse em remove-los, entre em contato diretamente com o <@{589502565243289612}>.', inline=False)
-    embed.set_image(url="https://i.imgur.com/GAw2sJ4.jpg")
-    embed.set_footer(text='Whois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
-
-    await ctx.send(embed=embed)
-
 
 @client.command()
 async def projectovnia(ctx):
@@ -347,18 +330,60 @@ async def ferramentas(ctx):
 @client.command()
 async def regras(ctx):
 
-    embed = discord.Embed(title='', description='As coisas aqui no servidor **Houses** Alien são bem diferentes dos demais servidores encontrados por ai no Discord. Segue Abaixo as regras do nosso servidor.',)
-    
-    embed.set_author(name='ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤREGRAS 🧾ㅤ', icon_url='')
-
-    embed.add_field(name="Regra número 1", value='A opinião do Alien é a que **prevalece sempre** independente da circunstancias!', inline=False)
-    embed.add_field(name="Regra número 2", value='Aqui é mesma coisa que Las Vegas, o que acontece em Vegas, fica em Vegas! Do mesmo modo ocorre aqui... **O que acontece aqui, fica aqui!**', inline=False)
-    embed.add_field(name="Regra número 3", value='Pessoas chatas e insuportáveis não será tolerada. Caso você seja uma delas, você não será convidado a se retirar... **Você será retirado a força!**', inline=False)
-    embed.add_field(name="Regra número 4", value='A regra número 4 é, **somente**, a regra número 4', inline=False)
-    embed.add_field(name="OBS:", value='Antes que alguém leve isso a sério, é apenas uma brincadeirinha kkkkkkk', inline=False)
-    embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
+    embed = discord.Embed(title='ㅤㅤㅤRegras/Termos e Responsabilidades - Houses Alienㅤㅤㅤ', description='Olá usuários! Gostaria de deixar as boas-vindas a você, membro ou amigo que está presente em nosso servidor! Esta aba é dedicada a deixar as regras e termos que seguimos para que fique o mais transparente possível as coisas que rolam por aqui. Como uma comunidade organizada, temos diretrizes a serem seguidas e termos a serem respeitados, então esperamos que você **dedique o seu tempo para que você possa ler as diretrizes e políticas**!\n\n Tempo de Leitura: **10 minutos**')
+    embed.add_field(name="", value="", inline=False)
+    embed.add_field(name="Regras do servidor:", value="", inline=False)
+    embed.add_field(name="\n", value="\n", inline=False)
+    embed.add_field(name="🌁 1. O que acontece aqui, fica aqui", value="Aqui em nosso servidor é igual Las Vegas! **Tudo o que ocorre aqui, fica por aqui!** não saiam espalhando informações/desinformações, senso comum ou outros itens que possam vir ocorrer por aqui!", inline=False)
+    embed.add_field(name="🗣️ 2. Xingamentos", value="Nossa comunidade foi criada especialmente com o intuito de poder juntar os amigos e colegas para jogarem... Como todos sabem, em jogos online sempre houve e sempre haverá xingamentos e brigas internas em relação aos membros, então não há nenhuma restrição de xingamentos e outros insultos com o intuito de difamar, menosprezar e/ou insultar quaisquer dos membros. Sempre conseguimos distinguir o que é brincadeira ou não, então a regra é clara, xingamentos e outros insultos que sejam apenas por brincadeiras entre amigos é permitido! O que não será permitido são brigas e desavenças entre membros que não se conhecem! Se você não conhece o outro membro, por gentileza, não insulte-o até possuir um certo nível de intimidade! ", inline=False)
+    embed.add_field(name="❌ 3. Preconceito", value="Não será tolerada a discriminação por raça, cor, religião, identidade de gênero, orientação sexual, deficiência ou qualquer outro fator extra-racial aqui dentro do servidor! Se houver difamação e brincadeirinhas toscas que possa prejudicar algum outro membro, será notificado ou expulso e não quero nem saber de justificativa!", inline=False)
+    embed.add_field(name="👾 4. Vírus/Malwares", value="Totalmente proibido disseminar Malwares, Trojans, Ransonwares, phishing e qualquer outro tipo de conteúdo que possa trazer malefícios à comunidade.", inline=False)
+    embed.add_field(name="⚽ 5. Futebol", value="Liberado debater sobre futebol desde que seja algo ético e sensato. Brincadeiras são liberadas desde que outros membros se sintam confortáveis.", inline=False)
+    embed.add_field(name="💼 6. Política", value="Assuntos sobre Política também são liberados, desde que você tenha mínimo conhecimento prévio e conteúdo para debater. Nossa comunidade não possui nenhuma filiação partidária, muito menos posições políticas. A opinião dos membros, é, apenas, opinião dos membros. Assuntos políticos aqui dentro do servidor, podem não estar relacionados à opinião direta dos membros! Se você quiser debater sobre política, debata! porém tenha a total ciência do que está falando e não saia espalhando desinformação, muito menos ignorância.", inline=False)
+    embed.add_field(name="⛪ 7. Religião", value="Pode ser debatido desde que não exista ignorância.", inline=False)
+    embed.add_field(name="😀 8. Membros", value=f"Nunca confie 100% em ninguém do servidor, muito menos nos membros! Aqui raramente alguém vai te chamar no privado para querer saber algo sobre você ou algo relacionado! Confie apenas nos membros com cargos de <@&{913150421063835659}> ou <@&{913150435651629106}> já que são de confiança do dono do servidor.", inline=False)
+    embed.add_field(name="🤖 9. Comandos de Bot", value=f"Os comandos dos bots disponíveis no servidor devem ser usados apenas no canal <#{1179508687556051074}>. Comandos de música devem ser usados apenas no canal <#{913225365072257046}>.", inline=False)
+    embed.add_field(name="📯 10. Divulgações", value=f"Caso queira fazer alguma divulgação no servidor, use o canal <#{913225542059315240}>. OBS: Só será aceito divulgações coerentes como redes sociais, campanhas beneficentes, vakinhas e outros! Links para outros servidores, pedir permissão para mim (<@{589502565243289612}>).", inline=False)
+    embed.add_field(name="📧 11. Convites", value=f"Para manter algo mais organizado, nenhum usuário tem a permissão de criar link de convites a não ser os membros com privilégios, como o <@&{913150421063835659}> ou <@&{913150435651629106}>. Peço a gentileza de outros membros que usem apenas o convite fixado no canal <#{1065675289163726848}>!", inline=False)
+    embed.add_field(name="⚙️ 12. Atualizações", value=f"Sempre que houver atualizações significativas no servidor será notificado em <#{913137314845306900}>, então é de extrema importância que seja lido as mensagens do canal quando houver atualização!", inline=False)
+    embed.add_field(name="🎰 13. Jogos de Azar", value=f"É totalmente proibídio a divulgação e/ou disseminação de links, publicidades, campanhas e outros meios que venham existir sobre jogos de azar, apostas esportivas, bets, slots e quaiquer outros serviços relacionados! Nossa comunidade é totalmente contra esse tipo de ato e o criador <@{589502565243289612}> repugna qualquer coisa relacionada a essa área! Se você, você que faz parte desse esquema de pirâmide financeira vir divulgar aqui no meu servidor, você será banido e não vai ter justificativa!", inline=False)
+    embed.add_field(name="🧠 14. Conhecimento", value="O conhecimento te liberta! discuta e propague o quanto quiser! Hoje em dia com o aumento de pessoas nas redes sociais e a quantidade de desinformação que é propagada diariamente, é raro achar alguém que fale coisas boas e propague conteúdo de qualidade. Grande parte das pessoas na atualidade fazem vídeos e espalham conteúdos extremamente ruins e/ou sem valor a agregar para a comunidade como um todo. Aqui valorizamos conteúdos bons e conhecimentos! Então fique a vontade para discutir/debater/conversar sobre quaisquer assuntos!", inline=False)
+    embed.add_field(name="🗃️ 15. Termos e Políticas", value=f"Será destinado em um comando separado os termos e políticas do servidor em relação ao Bot <@{927981778419998750}> e em relação a outros itens, então a regra número 12 é estar ciente de TODOS OS TERMOS E POLÍTICAS do mesmo em relação ao servidor. LEIAM! Seu orgão genital não vai cair por perder alguns minutos da sua vida lendo ao importante! - Comando para visualizar os termos: `./termos`", inline=False)
+    embed.add_field(name="🏷️ 16. Regra importante", value=f"A regra 16 é importantissima! A regra 16 é somente a regra 16! Obrigado!", inline=False)
+   
+    embed.add_field(name="\n", value="\n", inline=False)
+    embed.set_footer(text='Regras elaboradas por offalien\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
 
     await ctx.send(embed=embed)
+
+@client.command()
+async def termos(ctx):
+
+    embed = discord.Embed(title='ㅤㅤㅤRegras/Termos e Responsabilidades - Houses Alienㅤㅤㅤ', description='\n\n Tempo de Leitura: **3 minutos**\n\n')
+
+    embed.add_field(name="\n", value="\n", inline=False)
+    embed.add_field(name="Termos de uso e Responsabilidades", value="", inline=False)
+    embed.add_field(name="\n", value="\n", inline=False)
+    embed.add_field(name="1. Comunidade Inclusivaㅤ", value='O Bot de Discord Whois Alien se esforça para criar um ambiente inclusivo onde todos os usuários são bem-vindos e respeitados. Não toleramos qualquer forma de discriminação com base em raça, cor, religião, identidade de gênero, orientação sexual, deficiência ou qualquer outra característica protegida por lei. \n\n', inline=False)
+    embed.add_field(name="2. LGPD - Lei Geral de Proteção de Dados", value='As consultas de dados realizadas pelo Bot de Discord Whois Alien estão em estrita conformidade com a Lei Geral de Proteção de Dados (LGPD). Isso significa que:\n\n             - Os dados coletados são utilizados apenas para os fins específicos para os quais foram autorizados.\n\n             - Os usuários têm o direito de acessar, corrigir ou excluir seus dados pessoais contatando o criador/compilador do mesmo, conforme previsto pela LGPD.', inline=False)
+    embed.add_field(name="3. Uso Indevido das Consultas", value='O criador do Bot de Discord Whois Alien não é responsável pelo uso indevido das consultas realizadas pela ferramenta. Os participantes do servidor também são orientados a usar as informações obtidas de maneira ética e legal. Qualquer uso indevido é estritamente proibido e não reflete a intenção ou responsabilidade do criador ou dos participantes do servidor.', inline=False)
+    embed.add_field(name="4. Dados Gerados e Coincidências", value='Dados gerados pelo Bot de Discord Whois Alien que possam coincidir com informações reais são puramente coincidência. O bot é projetado para fornecer informações gerais baseadas em dados disponíveis publicamente e não garante a precisão ou exatidão das informações fornecidas.', inline=False)
+    embed.add_field(name="5. Uso Consciente e Ético da Ferramenta", value='Os usuários são incentivados a usar o Bot de Discord Whois Alien de maneira consciente e ética. Isso inclui:\n\n             - Não utilizar a ferramenta para atividades ilegais ou ilícitas.\n\n             - Respeitar os direitos de privacidade de terceiros.\n\n             - Não realizar consultas em larga escala que possam sobrecarregar os sistemas ou violar os termos de serviço de terceiros.', inline=False)
+    embed.add_field(name="6. Consequências do Uso Indevido", value='Qualquer uso indevido do Bot de Discord Whois Alien resultará em medidas disciplinares, incluindo, mas não limitado a, banimento permanente do servidor e revogação do acesso à ferramenta. A equipe de moderação se reserva o direito de tomar ações apropriadas para manter a integridade e a segurança do ambiente do servidor.', inline=False)
+    embed.add_field(name="", value='', inline=False)
+    embed.add_field(name="Outros Detalhes e Informações Importantes", value='', inline=False)    
+    embed.add_field(name="", value='\n\n- **Atualizações e Mudanças**: O Bot de Discord Whois Alien pode ser atualizado periodicamente para melhorar funcionalidades e segurança. Os usuários serão informados sobre quaisquer mudanças significativas que possam afetar o uso da ferramenta.\n\n             - **Suporte e Contato**: Para dúvidas, suporte ou relatar problemas, os usuários podem entrar em contato com o dono do servidor, conforme as instruções fornecidas.', inline=False)    
+    embed.add_field(name="", value='Estes termos e responsabilidades visam garantir um ambiente seguro, ético e responsável para todos os usuários que interagem com o Bot de Discord Whois Alien.', inline=False)
+    embed.add_field(name="", value=f'Caso verifique que seus dados estão presentes na ferramenta e você tenha interesse em remove-los, entre em contato diretamente com o <@{589502565243289612}>.', inline=False)
+    embed.add_field(name="\n", value="\n", inline=False)    
+    embed.set_footer(text='Termos e políticas elaboradas por offalien\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
+
+    await ctx.send(embed=embed)
+
+@client.command()
+async def repositorio(ctx):
+
+    await ctx.send("https://github.com/cristopherrissardi/Whois-Alien-Bot")
 
 @client.command()
 async def info(ctx):
