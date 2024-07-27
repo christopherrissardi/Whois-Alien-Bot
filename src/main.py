@@ -135,10 +135,11 @@ async def clear_error(ctx, error):
 @client.event
 async def on_member_join(member):
     welcome = member.guild.get_channel(913133936610246656)
+    user_id = member.id
 
     if welcome:
 
-        embed = discord.Embed(title='Olá, usuário! Seja muito bem vindo ao nosso servidor!', description=f'A partir de agora, você terá alguns requisitos a serem cumpridos para que você possa ser um membro em nosso servidor. Segue abaixo os requisitos')
+        embed = discord.Embed(title=f'Olá {member} Seja muito bem vindo ao nosso servidor!', description=f'A partir de agora <@{user_id}>, você terá alguns requisitos a serem cumpridos para que você possa ser um membro em nosso servidor. Segue abaixo os requisitos')
 
         embed.add_field(name="\n\n", value="\n\n", inline=False)        
         embed.add_field(name="Requisitos Importântes:", value="", inline=False) 
