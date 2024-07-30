@@ -32,27 +32,22 @@ intents.message_content = True
 client = commands.Bot(command_prefix='./', intents=intents)
 client_gpt3 = Client()
 
-###ARRUMAR:
-            #CONSULTA DE PLACA
 load_dotenv()
 
 API_KEY = os.getenv("API_KEY")
 
-###################################################   FEITO   #######################################################
 @client.event
 async def on_ready():
     activity = discord.Game(name='Created By Alien', type=3)
     await client.change_presence(status=discord.Status.dnd, activity=activity)
     print("Conectado")
 
-###################################################   FEITO   #######################################################
 @client.event
 async def on_message(message):
     if isinstance(message.channel, discord.DMChannel):
         return
     await client.process_commands(message)
 
-###################################################   FEITO   #######################################################
 @client.command()
 async def clear(ctx, amount: int):
     if ctx.author.guild_permissions.manage_messages:
@@ -68,7 +63,6 @@ async def clear(ctx, amount: int):
         embed = discord.Embed(title='',description='Sai dai bostinha, você não tem permissão para limpar as mensagens.',)
         await ctx.send(embed=embed)
 
-###################################################   FEITO   #######################################################
 @client.command()
 async def kick(ctx, member : discord.Member, *, reason=None):
     await member.kick(reason=reason)
@@ -76,7 +70,6 @@ async def kick(ctx, member : discord.Member, *, reason=None):
     embed = discord.Embed(title=f'Usuário Expulso: {member.name}', description=f'O usuário {member.mention} foi expulso do servidor por ser babaca!')
     await ctx.send(embed=embed)
 
-###################################################   FEITO   #######################################################
 @client.command()
 async def ban(ctx, member : discord.Member, *, reason=None):
     await member.ban(reason=reason)
@@ -84,7 +77,6 @@ async def ban(ctx, member : discord.Member, *, reason=None):
     embed = discord.Embed(title=f'Usuário Banido: {member.name}', description=f'O usuário {member.mention} foi bnido do servidor por ser otário e babaca!')
     await ctx.send(embed=embed)
 
-###################################################   FEITO   #######################################################
 @client.command()
 async def unban(ctx, *, member):
     banned_users = await ctx.guild.bans()
@@ -98,7 +90,6 @@ async def unban(ctx, *, member):
       await ctx.send(f'Desbanido {user.mention}')
       return
 
-###################################################   FEITO   #######################################################
 @client.command()
 async def mute(ctx, member: discord.Member):
     if ctx.author.guild_permissions.mute_members:
@@ -111,7 +102,6 @@ async def mute(ctx, member: discord.Member):
     else:
         await ctx.send('Você não tem permissão para mutar membros.')
 
-###################################################   FEITO   #######################################################
 @client.command() #COMANDO
 async def unmute(ctx, member: discord.Member): #COMANDO
 
@@ -125,13 +115,11 @@ async def unmute(ctx, member: discord.Member): #COMANDO
     else:
         await ctx.send('Você não tem permissão para desmutar membros.')
 
-###################################################   FEITO   #######################################################
 @clear.error
 async def clear_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArguments):
         await ctx.send('...')
 
-###################################################   FEITO   #######################################################
 @client.event
 async def on_member_join(member):
     welcome = member.guild.get_channel(913133936610246656)
@@ -198,31 +186,30 @@ async def ia(ctx):
 
     await ctx.send(embed=embed)
 
-@client.command()
-async def gpt4(ctx, *, question):
-    response = client_gpt3.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": question}],
-    )
-    answer = response.choices[0].message.content
-    embed = discord.Embed(title="", description=answer)
-    embed.set_author(name='ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤOpenAI GPT-4ㅤㅤㅤㅤㅤㅤㅤㅤ', icon_url='')
-    embed.set_footer(text='Whois Alien © All Rights Reserved', icon_url='')
-    await ctx.send(embed=embed, reference=ctx.message)
+# @client.command()
+# async def gpt4(ctx, *, question):
+#     response = client_gpt3.chat.completions.create(
+#         model="gpt-3.5-turbo",
+#         messages=[{"role": "user", "content": question}],
+#     )
+#     answer = response.choices[0].message.content
+#     embed = discord.Embed(title="", description=answer)
+#     embed.set_author(name='ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤOpenAI GPT-4ㅤㅤㅤㅤㅤㅤㅤㅤ', icon_url='')
+#     embed.set_footer(text='Whois Alien © All Rights Reserved', icon_url='')
+#     await ctx.send(embed=embed, reference=ctx.message)
 
-@client.command()
-async def ovnia(ctx, *, question):
-    response = client_gpt3.chat.completions.create(
-        model="gemini",
-        messages=[{"role": "user", "content": question}],
-    )
-    answer = response.choices[0].message.content
-    embed = discord.Embed(title="", description=answer)
-    embed.set_footer(text='Whois Alien © All Rights Reserved', icon_url='')
-    await ctx.send(embed=embed, reference=ctx.message)
+# @client.command()
+# async def ovnia(ctx, *, question):
+#     response = client_gpt3.chat.completions.create(
+#         model="gemini",
+#         messages=[{"role": "user", "content": question}],
+#     )
+#     answer = response.choices[0].message.content
+#     embed = discord.Embed(title="", description=answer)
+#     embed.set_footer(text='Whois Alien © All Rights Reserved', icon_url='')
+#     await ctx.send(embed=embed, reference=ctx.message)
 
 
-###################################################   FEITO   #######################################################
 @client.command()
 async def consultas(ctx):
 
@@ -254,7 +241,6 @@ async def consultas(ctx):
 
     await ctx.send(embed=embed)
 
-###################################################   FEITO   #######################################################
 @client.command()
 async def diversos(ctx):
 
@@ -268,7 +254,6 @@ async def diversos(ctx):
 
     await ctx.send(embed=embed)
 
-###################################################   FEITO   #######################################################
 @client.command()
 async def ajuda(ctx):
 
@@ -289,7 +274,6 @@ async def ajuda(ctx):
 
     await ctx.author.send(embed=embed)
 
-###################################################   FEITO   #######################################################
 @client.command()
 async def admin(ctx):
 
@@ -311,7 +295,6 @@ async def admin(ctx):
 
     await ctx.send(embed=embed); 
 
-###################################################   FEITO   #######################################################
 @client.command()
 async def ferramentas(ctx):
 
@@ -327,7 +310,6 @@ async def ferramentas(ctx):
 
     await ctx.send(embed=embed)
 
-###################################################   FEITO   #######################################################
 @client.command()
 async def regras(ctx):
 
@@ -402,7 +384,6 @@ async def info(ctx):
 
     await ctx.send(embed=embed)
 
-###################################################   FEITO   #######################################################
 @client.command()
 async def ryanboiola(ctx):
 
@@ -427,7 +408,6 @@ async def ryanboiola(ctx):
     
     await ctx.send(embed=embed)
 
-###################################################   NOME FEITO   #######################################################
 @client.command()
 async def nome(ctx, *, nome):
 
@@ -479,7 +459,6 @@ async def nome(ctx, *, nome):
 
         await ctx.send(embed=embed)
 
-###################################################   NOME FEITO   #######################################################
 @client.command()
 async def mae(ctx, *, mae):
 
@@ -531,8 +510,6 @@ async def mae(ctx, *, mae):
 
         await ctx.send(embed=embed)
 
-
-###################################################   NOME FEITO   #######################################################
 @client.command()
 async def pai(ctx, *, pai):
 
@@ -584,7 +561,6 @@ async def pai(ctx, *, pai):
 
         await ctx.send(embed=embed)
 
-###################################################   NOME FEITO   #######################################################
 @client.command()
 async def email(ctx, *, email):
 
@@ -636,7 +612,6 @@ async def email(ctx, *, email):
 
         await ctx.send(embed=embed)
 
-###################################################  CPF2 FEITO   #######################################################
 @client.command()
 async def cpf(ctx, *, cpf):
 
@@ -699,7 +674,6 @@ async def cpf(ctx, *, cpf):
 
         await ctx.send(embed=embed)
 
-##======================================== TESTAR =========================================##
 @client.command()
 async def cpf0(ctx, *, cpf0):
 
@@ -742,8 +716,6 @@ async def cpf0(ctx, *, cpf0):
         embed.add_field(name="Use o comando: `/cpf` e o {CPF} que deseja.", value='*Exemplo: `/cpf0` 123.456.789-12*', inline=False)
 
         await ctx.send(embed=embed)
-
-###-------------------------------------- NAO FEITO!!! FAZER --------------------------------------##
 
 @client.command()
 async def telefone(ctx, *, telefone):
@@ -802,7 +774,6 @@ async def telefone(ctx, *, telefone):
         embed.add_field(value='Exemplo: `/telefone` 11987654321', inline=False)
 
         await ctx.send(embed=embed)
-
 
 @client.command()
 async def fixo(ctx, *, fixo):
@@ -918,7 +889,6 @@ async def cep_pessoas(ctx, *, cep_pessoas):
         await ctx.send(embed=embed)
 
 
-###-------------------------------------- NAO FEITO!!! FAZER --------------------------------------##
 @client.command()
 async def placa(ctx, placa = None):
 
@@ -951,7 +921,6 @@ async def placa(ctx, placa = None):
 
     await ctx.send(embed=embed)
 
-###################################################   CNPJ FEITO   #######################################################
 @client.command() 
 async def cnpj(ctx, cnpj = None):
 
@@ -977,13 +946,10 @@ async def cnpj(ctx, cnpj = None):
         validateDataSituacao = data["data_situacao"] if data["data_situacao"] != "" else "SEM INFORMAÇÃO"
         validateJuridica = data["nm_cidade_exterior"] if data["nm_cidade_exterior"] != "" else "SEM INFORMAÇÃO"
         validateLogradouro = data["logradouro"] if data["logradouro"] != "" else "SEM INFORMAÇÃO"
-
         validateTipoRua = data["tipo_logradouro"] if data["tipo_logradouro"] != "" else "SEM INFORMAÇÃO"
         validateSocios = ', '.join(data["socios"]) if data["socios"] else "SEM INFORMAÇÃO"
-
         validateTelefone1 = data["telefone_1"] if data["telefone_1"] != "" else "SEM INFORMAÇÃO"
         validateTelefone2 = data["telefone_2"] if data["telefone_2"] != "" else "SEM INFORMAÇÃO"
-
         validateQualificacao = data["cod_pais"] if data["cod_pais"] != "" else "SEM INFORMAÇÃO"
         validateCapital = data["capital_social"] if data["capital_social"] != "" else "SEM INFORMAÇÃO"
         validateSimples = data["opc_simples"] if data["opc_simples"] != "" else "SEM INFORMAÇÃO"
@@ -1006,23 +972,14 @@ async def cnpj(ctx, cnpj = None):
         embed.add_field(name="• DATA DE ABERTURA", value=validateData, inline=False) #
         embed.add_field(name="• E-MAIL", value=validateEmail, inline=False) #
         embed.add_field(name="• SÓCIOS PROPRIETÁRIOS", value=validateSocios, inline=False) #
-
         embed.add_field(name="• DATA DE ATUALIZAÇÃO", value=validateDataSituacao, inline=False) #
-
-
         embed.add_field(name="• QUALIFICAÇÃO DO RESPONSÁVEL", value=validateCnae, inline=False) #
         embed.add_field(name="• CIDADE NO EXTERIOR", value=validateJuridica, inline=False) #
         embed.add_field(name="• CÓDIGO DO PAÍS EXTERIOR", value=validateQualificacao, inline=False) #
-
         embed.add_field(name="• CAPITAL SOCIAL", value=validateCapital, inline=False) #
         embed.add_field(name="• OPÇÃO PELO SIMPLES", value=validateSimples, inline=False) #
         embed.add_field(name="• DATA OPÇÃO PELO SIMPLES", value=validateSimplesDate, inline=False) #
-
-
-
-
         embed.add_field(name="• CNAE FISCAL", value=validateCnaeCod, inline=False) #
-
         embed.add_field(name="ㅤ", value='👽ﾠ**By Whois Alien**', inline=False)             
         embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
 
@@ -1044,7 +1001,6 @@ async def cnpj(ctx, cnpj = None):
        return await ctx.send(embed=embed)
 
 
-###################################################   IP FEITO   #######################################################
 @client.command()
 async def ip(ctx, ip = None):
 
@@ -1091,7 +1047,6 @@ async def ip(ctx, ip = None):
        embed.set_author(name='ㅤㅤㅤIP NÃO ENCONTRADOㅤㅤㅤ', icon_url='')
        return await ctx.send(embed=embed)
 
-###################################################   COVID FEITO   #######################################################
 @client.command()
 async def covid(ctx, covid = None):
 
@@ -1130,7 +1085,6 @@ async def covid(ctx, covid = None):
        embed.set_author(name='ㅤㅤㅤㅤㅤㅤESTADO INVÁLIDOㅤㅤㅤ', icon_url='')
        return await ctx.send(embed=embed)
 
-###################################################   CEP FEITO   #######################################################
 @client.command()
 async def cep(ctx, cep=None):
 
@@ -1169,13 +1123,11 @@ async def cep(ctx, cep=None):
 
     await ctx.send(embed=embed)
 
-###################################################   MAC FEITO   #######################################################
 @client.command()
 async def maclookup(ctx, maclookup):
 
     mac_key = os.getenv("MACLOOKUP_KEY")
     url = f"https://mac-address.whoisxmlapi.com/api/v1?apiKey={mac_key}&macAddress={maclookup}&outputFormat=json" #--------->> API
-
 
     try:
         response = requests.get(url)
@@ -1185,7 +1137,6 @@ async def maclookup(ctx, maclookup):
 
             date_created_iso = data.get("blockDetails", {}).get("dateCreated", "SEM INFORMAÇÃO")
             date_updated_iso = data.get("blockDetails", {}).get("dateUpdated", "SEM INFORMAÇÃO")
-
 
             date_created_br = datetime.strptime(date_created_iso, "%Y-%m-%d").strftime("%d/%m/%Y") #----->> VARIAVEL CORRIGIDA DE DATA DE CRIAÇÃO
             date_updated_br = datetime.strptime(date_updated_iso, "%Y-%m-%d").strftime("%d/%m/%Y") #----->> VARIAVEL CORRIGIDA DE DATA DE ATUALIZAÇÃO
@@ -1228,7 +1179,6 @@ async def maclookup(ctx, maclookup):
         embed.add_field(name="Observação:", value='*Pode ser utilizado somente letras maiúscilas e minúsculas*', inline=False)  
         await ctx.send(embed=embed)
 
-###################################################   REVERSE IP FEITO   #######################################################
 @client.command()
 async def reverseip(ctx, reverseip):
 
@@ -1274,7 +1224,6 @@ async def reverseip(ctx, reverseip):
 
         await ctx.send(embed=embed)
 
-###################################################   TRACEROUTE FEITO   #######################################################
 @client.command()
 async def traceroute(ctx, traceroute):
 
@@ -1299,8 +1248,6 @@ async def traceroute(ctx, traceroute):
                 
                 embed.add_field(name=f"SERVIDOR N°: {numero_id}", value=f"ENDEREÇO IP: {ip_addrs}\nSERVIDOR: {hostname}\nTEMPO DE IDA E VOLTA (ms): {rtt_info}", inline=False)
 
-
-
                 embed.set_author(name='ㅤㅤㅤㅤㅤTRACEROUTE EFETUADO COM SUCESSOㅤㅤㅤㅤ', icon_url='')
                 embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
 
@@ -1321,7 +1268,6 @@ async def traceroute(ctx, traceroute):
 
         await ctx.send(embed=embed)
 
-###################################################   PORTSCAN FEITO   #######################################################
 @client.command()
 async def portscan(ctx, portscan):
     
@@ -1363,7 +1309,6 @@ async def portscan(ctx, portscan):
         embed.set_author(name='ERRO NA RESPOSTA DA API - PORTSCAN', icon_url='')
         await ctx.send(embed=embed)
 
-###################################################   PING FEITO   #######################################################
 @client.command()
 async def ping(ctx):
 
@@ -1377,7 +1322,6 @@ async def ping(ctx):
 
     await ctx.send(embed=embed)
 
-###################################################   BANCO FEITO   #######################################################
 @client.command()
 async def banco(ctx, banco=None):
 
@@ -1410,7 +1354,6 @@ async def banco(ctx, banco=None):
         embed.set_author(name='ㅤㅤCÓDIGO BANCÁRIO NÃO ENCONTRADOㅤㅤ', icon_url='')
         return await ctx.send(embed=embed)
 
-###################################################   BIN FEITO   #######################################################
 @client.command()
 async def bin(ctx, bin):
 
@@ -1455,7 +1398,6 @@ async def bin(ctx, bin):
 
         await ctx.send(embed=embed)
 
-###################################################  SITE FEITO   #######################################################
 @client.command()
 async def site(ctx, site = None):
 
@@ -1495,7 +1437,6 @@ async def site(ctx, site = None):
        embed.set_author(name='ㅤㅤㅤSITE NÃO ENCONTRADOㅤㅤㅤ', icon_url='')
        return await ctx.send(embed=embed)
 
-###################################################   OPERADORA FEITO   #######################################################
 @client.command() 
 async def operadora(ctx, operadora = None):
 
@@ -1538,7 +1479,6 @@ async def operadora(ctx, operadora = None):
        embed.set_author(name='ㅤㅤㅤOPERADORA NÃO ENCONTRADAㅤㅤㅤ', icon_url='')
        return await ctx.send(embed=embed)
 
-###################################################   EMAIL FEITO   #######################################################
 @client.command()
 async def emailinfo(ctx, emailinfo = None):
 
@@ -1580,7 +1520,6 @@ async def emailinfo(ctx, emailinfo = None):
        embed.set_author(name='E-MAIL NÃO ENCONTRADO', icon_url='')
        return await ctx.send(embed=embed)
    
-###################################################  COTACAO FEITO   #######################################################
 @client.command()
 async def cotacao(ctx, cotacao = None):
 
@@ -1625,7 +1564,6 @@ async def cotacao(ctx, cotacao = None):
 
     await ctx.send(embed=embed)
 
-###################################################  DDD FEITO   #######################################################
 @client.command() 
 async def ddd(ctx, ddd = None):
 
@@ -1660,7 +1598,6 @@ async def ddd(ctx, ddd = None):
     except Exception:
         pass   
 
-###################################################   FERIADOS FEITO   #######################################################
 @client.command()
 async def feriados(ctx, feriados):
 
@@ -1705,7 +1642,6 @@ async def feriados(ctx, feriados):
 
         await ctx.send(embed=embed)
 
-###################################################   GERADOR FEITO   #######################################################
 @client.command()
 async def gerador(ctx):
 
@@ -1725,7 +1661,6 @@ async def gerador(ctx):
 
     await ctx.send(embed=embed)
     
-###################################################   GERAR PESSOA FEITO   #######################################################
 @client.command()
 async def gerarpessoa(ctx):
 
@@ -1768,8 +1703,6 @@ async def gerarpessoa(ctx):
     else:
        embed.set_author(name='ㅤㅤㅤNÃO FOI POSSÍVEL GERAR UMA PESSOA NO MOMENTOㅤㅤㅤ', icon_url='')
        return await ctx.send(embed=embed)
-
-
 
 @client.command()
 async def gerarusr(ctx):
@@ -1872,7 +1805,6 @@ async def gerartel(ctx):
        embed.set_author(name='ㅤㅤㅤNÃO FOI POSSÍVEL GERAR UM TELEFONE NO MOMENTOㅤㅤㅤ', icon_url='')
        return await ctx.send(embed=embed)
 
-###################################################   GERAR CPF FEITO   #######################################################
 @client.command()
 async def gerarcpf(ctx):
 
@@ -1908,7 +1840,6 @@ async def gerarcpf(ctx):
        embed.set_author(name='ㅤㅤㅤNÃO FOI POSSÍVEL GERAR UM CPF NO MOMENTOㅤㅤㅤ', icon_url='')
        return await ctx.send(embed=embed)
 
-###################################################   GERAR CARTAO FEITO   #######################################################
 @client.command()
 async def gerarcartao(ctx):
 
@@ -1936,7 +1867,6 @@ async def gerarcartao(ctx):
 
         await ctx.send(embed=embed)
 
-###################################################   GERAR SENHA FEITO   #######################################################
 @client.command()
 async def gerarsenha(ctx, length=12):
 
@@ -1957,9 +1887,6 @@ async def gerarsenha(ctx, length=12):
     else:
         await ctx.send("O comprimento da senha deve estar entre 4 e 32 caracteres.")
 
-#GERAR E-MAIL, USERNAME, VEÍCULO, NUMERO DE TELEFONE, IMEI 
-
-###################################################   TRADUTOR FEITO   #######################################################
 @client.command()
 async def tradutor(ctx):    
 
@@ -1972,7 +1899,6 @@ async def tradutor(ctx):
 
     await ctx.send(embed=embed)
 
-###################################################   TRADUZIR FEITO   #######################################################
 @client.command()
 async def traduzir(ctx, target_language, *, text):
 
@@ -2004,8 +1930,6 @@ async def traduzir(ctx, target_language, *, text):
 
         await ctx.send(embed=embed)
 
-
-
 @client.command()
 async def criador(ctx):
 
@@ -2021,7 +1945,10 @@ async def criador(ctx):
     await ctx.send(embed=embed)
 
 
+
+
+
 bot_token = os.getenv("BOT_TOKEN")
-
-
 client.run(bot_token)
+
+
