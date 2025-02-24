@@ -19,6 +19,7 @@ import nest_asyncio
 import time
 import aiohttp 
 import re
+import secrets
 
 
 
@@ -580,44 +581,45 @@ async def cpf(ctx, *, cpf=None):
 
                 idade = cpf_info.get('IDADE')
 
-##################### FIELD ENDEREÇOS
-
                 enderecos_str = ""
 
-                enderecos = cpf_info.get('ENDERECOS', [])
+                # Recupera os endereços do JSON (supondo que seja uma lista)
+                enderecos = cpf_info.get('ENDEREÇOS', [])
+
+                # Itera sobre cada endereço
                 for endereco in enderecos:
                     rua = endereco.get('rua')
                     numero = endereco.get('numero')
                     bairro = endereco.get('bairro')
                     cidade = endereco.get('cidade')
                     uf = endereco.get('uf')
-                    cep = endereco.get('cep')
 
-                    enderecos_str += f"{rua}, {numero}, {bairro}, {cidade}, {uf}, {cep}\n"
+                    # Verifica se o campo "rua" está vazio ou não
+                    if not rua:  # Se "rua" estiver vazio ou None
+                        continue  # Pula esse endereço e vai para o próximo
 
-                if not enderecos_str.strip():
-                    enderecos_str = "SEM INFORMAÇÃO"
+                    # Se a rua não for vazia, monta o endereço
+                    enderecos_str += f"{rua}, {numero} - {bairro} - {cidade}, {uf}\n"
 
-##################### FIELD TELEFONE
 
                 telefone_str = ""
 
-                telefone_principal = cpf_info.get('TELEFONE', 'SEM INFORMAÇÃO')
-                telefone_secundario = cpf_info.get('TELEFONE_SECUNDARIO', 'SEM INFORMAÇÃO')
+                telefone_principal = cpf_info.get('TELEFONE', '')
+                telefone_secundario = cpf_info.get('TELEFONE_SECUNDARIO', '')
 
                 if telefone_principal != 'SEM INFORMAÇÃO':
                     telefone_str += f"{telefone_principal}\n"
 
                 if telefone_secundario != 'SEM INFORMAÇÃO':
-                    telefone_str += f"{telefone_secundario}\n"
+                    telefone_str += f"{telefone_secundario}"
 
                 telefones_normais = []
                 telefones_fixos = []
 
-                telefones = cpf_info.get('OUTROS_TELEFONES', [])
+                telefones = cpf_info.get('TELEFONES', [])
                 for telefone_info in telefones:
-                    telefone = telefone_info.get('telefone') or 'SEM INFORMAÇÃO'
-                    telefone_fixo = telefone_info.get('telefone_fixo') or 'SEM INFORMAÇÃO'  # Assume booleano ou indicador
+                    telefone = telefone_info.get('telefone')
+                    telefone_fixo = telefone_info.get('telefone_fixo')
 
                     if telefone_fixo:
                         telefones_fixos.append(f"{telefone}")
@@ -633,86 +635,209 @@ async def cpf(ctx, *, cpf=None):
                 if not telefone_str.strip():
                     telefone_str = "SEM INFORMAÇÃO"
 
-##################### FIELD RENDA
 
-                renda_info = cpf_info.get("RENDA_DESCRICAO", {})
+                renda_info = cpf_info.get("FAIXA_RENDA", {})
 
                 if renda_info:
-                    faixa_poder_aquisitivo = renda_info.get("FAIXA_PODER_AQUISITIVO", "SEM INFORMAÇÃO")
-                    renda_poder_aquisitivo = renda_info.get("RENDA_PODER_AQUISITIVO", "SEM INFORMAÇÃO")
+                    faixa_poder_aquisitivo = renda_info.get("FX_PODER_AQUISITIVO", "Sem Informação")
+                    renda_poder_aquisitivo = renda_info.get("PODER_AQUISITIVO", "Sem Informação")
+                    renda_bruta = renda_info.get("RENDA_PODER_AQUISITIVO", "Sem Informação")
 
                     renda_str = (
-                        f"`➤ PODER AQUISITIVO: {renda_poder_aquisitivo}`\n"
-                        f"`➤ FAIXA DE RENDA: {faixa_poder_aquisitivo}`")
+                        f"➤ Renda: {renda_bruta}\n"
+                        f"➤ Poder Aquisitivo: {renda_poder_aquisitivo}\n"
+                        f"➤ Faixa: {faixa_poder_aquisitivo}")
                 else:
                     renda_str = "SEM INFORMAÇÃO"
 
-                renda = cpf_info.get('RENDA')
-
-##################### FIELD SCORE
 
                 score_info = cpf_info.get("SCORE_ORGAOS", {})
 
                 if score_info:
-                    csb8_score_str = score_info.get("CSB8", "SEM INFORMAÇÃO")
-                    csb8_faixa_str = score_info.get("CSB8_FAIXA", "SEM INFORMAÇÃO")
-                    csba_score_str = score_info.get("CSBA", "SEM INFORMAÇÃO")
-                    csba_faixa_str = score_info.get("CSBA_FAIXA", "SEM INFORMAÇÃO")
-
+                    csb8_score_str = score_info.get("CSB8", "Sem Informação")
+                    csb8_faixa_str = score_info.get("CSB8_FAIXA", "Sem Informação")
+                    csba_score_str = score_info.get("CSBA", "SSem Informação")
+                    csba_faixa_str = score_info.get("CSBA_FAIXA", "Sem Informação")
                     score_str = (
-                        f"`➤ CSB8 SCORE: {csb8_score_str}`\n"
-                        f"`➤ CSB8 FAIXA DE SCORE: {csb8_faixa_str}`\n"
-                        f"`➤ CSBA SCORE: {csba_score_str}`\n"
-                        f"`➤ CSBA FAIXA DE SCORE: {csba_faixa_str}`")
+                        f"➤ CSB8: {csb8_score_str}\n"
+                        f"➤ CSB8 FAIXA: {csb8_faixa_str}\n"
+                        f"➤ CSBA: {csba_score_str}\n"
+                        f"➤ CSBA FAIXA: {csba_faixa_str}")
                 else:
-                    score_str = "SEM INFORMAÇÃO"
+                    score_str = "Sem Informação"
 
-##################### FIELD MOSAIC
 
                 mosaic_info = cpf_info.get("MOSAIC", {})
-
                 if mosaic_info:
-                    desc_mosaic = mosaic_info.get("DESCRICAO_MOSAIC", "SEM INFORMAÇÃO")
-                    desc_mosaic_secund = mosaic_info.get("DESCRICAO_MOSAIC_SECUNDARIO", "SEM INFORMAÇÃO")
-                    desc_mosaic_novo = mosaic_info.get("DESCRICAO_MOSAIC_NOVO", "SEM INFORMAÇÃO")
-
+                    desc_mosaic = mosaic_info.get("CD_MOSAIC_NOVO", "Sem Informação")
+                    desc_mosaic_secund = mosaic_info.get("DESC_MOSAIC_NOV", "Sem Informação")
+                    desc_mosaic_novo = mosaic_info.get("INFOR_MOSAIC_NOV", "Sem Informação")
                     mosaic_str = (
-                        f"`➤ MOSAIC: {desc_mosaic}`\n"
-                        f"`➤ MOSAIC SECUNDÁRIO: {desc_mosaic_secund}`\n"
-                        f"`➤ MOSAIC NOVO: {desc_mosaic_novo}`")
-
+                        f"➤ Mosaic: {desc_mosaic}\n"
+                        f"➤ Descrição: {desc_mosaic_secund}\n"
+                        f"➤ Informação: {desc_mosaic_novo}")
                 else:
                     mosaic_str = "SEM INFORMAÇÃO"
 
+
+                parentes_info = cpf_info.get("PARENTES", {})
+                if parentes_info:
+                    cpf_vinculo = parentes_info.get("CPF_VINCULO", "Sem Informação")
+                    nome_vinculo = parentes_info.get("NOME_VINCULO", "Sem Informação")
+                    vinculo = parentes_info.get("VINCULO", "Sem Informação")
+                    parente_str = (
+                        f"➤ Nome: {nome_vinculo}\n"
+                        f"➤ CPF: {cpf_vinculo}\n"
+                        f"➤ Vínculo: {vinculo}")
+                else:
+                    parente_str = "SEM INFORMAÇÃO"
+
+
+                conjuge_info = cpf_info.get("CONJUGE", {})
+                if conjuge_info:
+                    cpf_conjuge = conjuge_info.get("CPF", "Sem Informação")
+                    nome_conjuge = conjuge_info.get("NOME", "Sem Informação")
+                    nascimento_conjuge = conjuge_info.get("NASC", "Sem Informação")
+                    conjuge_str = (
+                        f"➤ Nome: {nome_conjuge}\n"
+                        f"➤ CPF: {cpf_conjuge}\n"
+                        f"➤ Nascimento: {nascimento_conjuge}")
+                else:
+                    conjuge_str = "SEM INFORMAÇÃO"
+
+
+                ensino_info = cpf_info.get("ENSINO_SUPERIOR", {})
+
+                # Verifica se a API retornou a mensagem de falta de informações
+                if ensino_info.get("message") == "SEM INFORMAÇÕES ATÉ O MOMENTO":
+                    superior_str = "SEM INFORMAÇÃO"
+                else:
+                    # Verifica se há pelo menos um valor válido preenchido
+                    if ensino_info and any(value not in ["", None] for value in ensino_info.values()):
+                        ano_conclusao = ensino_info.get("ANO_CONCLUSAO", "")
+                        ano_vestibular = ensino_info.get("ANO_VESTIBULAR", "")
+                        campus_cursado = ensino_info.get("CAMPUS", "")
+                        cota = ensino_info.get("COTA", "")
+                        curso_efetuado = ensino_info.get("CURSO", "")
+                        data_inclusao = ensino_info.get("DATA_INCLUSAO", "")
+                        faculdade = ensino_info.get("FACULDADE", "")
+                        inscricao_vestibular = ensino_info.get("INSCRICAO_VESTIBULAR", "")
+                        periodo_cursado = ensino_info.get("PERIODO_CURSADO", "")
+                        uf_cursado = ensino_info.get("UF", "")
+
+                        superior_str = (
+                            f"➤ Curso: {curso_efetuado}\n"
+                            f"➤ Ano Conclusão: {ano_conclusao}\n"
+                            f"➤ Faculdade: {faculdade}\n"
+                            f"➤ Campus: {campus_cursado}\n"
+                            f"➤ Período: {periodo_cursado}\n"
+                            f"➤ Inscrição Vestibular: {inscricao_vestibular}\n"
+                            f"➤ Ano Vestibular: {ano_vestibular}\n"
+                            f"➤ UF: {uf_cursado}\n"
+                            f"➤ Cotas: {cota}\n"
+                            f"➤ Data de inclusão: {data_inclusao}"
+                        ).strip()  # Remove espaços extras no final
+                    else:
+                        superior_str = "SEM INFORMAÇÃO"
+
+
+                irpf_info = cpf_info.get("INFORMACOES_IRPF", {})
+
+                # Verifica se a API retornou a mensagem de falta de informações
+                if irpf_info.get("message") == "SEM INFORMAÇÕES NO MOMENTO":
+                    rfb_str = "SEM INFORMAÇÃO"
+                else:
+                    # Verifica se há pelo menos um valor válido preenchido
+                    if irpf_info and any(value not in ["", None] for value in irpf_info.values()):
+                        ano_referencia = irpf_info.get("ANO_REFERENCIA", "")
+                        cod_agencia = irpf_info.get("COD_AGENCIA", "")
+                        data_info = irpf_info.get("DATA_INFORMACAO", "")
+                        banco_responsavel = irpf_info.get("INSTITUICAO_BANCARIA", "")
+                        lote = irpf_info.get("NUMERO_LOTE", "")
+                        status_rfb = irpf_info.get("STATUS_RECEITA_FEDERAL", "")
+
+                        rfb_str = (
+                            f"➤ Código Agência: {cod_agencia}\n"
+                            f"➤ Banco Responsável: {banco_responsavel}\n"
+                            f"➤ Lote: {lote}\n"
+                            f"➤ Status: {status_rfb}\n"
+                            f"➤ Ano de Referência: {ano_referencia}\n"
+                            f"➤ Data da Informação: {data_info}"
+                        ).strip()  # Remove espaços extras no final
+                    else:
+                        rfb_str = "SEM INFORMAÇÃO"
+
+
+                fgts_info = cpf_info.get("INFORMACOES_IRPF", {})
+
+                if fgts_info.get("message") == "SEM INFORMAÇÕES NO MOMENTO":
+                    fgts_str = "SEM INFORMAÇÃO"
+                else:
+
+                    if fgts_info and any(value not in ["", None] for value in irpf_info.values()):
+                        cpf_beneficiado = fgts_info.get("CPF", "")
+                        id_cadastro = fgts_info.get("CADASTRO_ID", "")
+                        data_fgts = fgts_info.get("DT_INCLUSAO", "")
+                        flag_2017 = fgts_info.get("FLAG_2017", "")
+                        flag_2018 = fgts_info.get("FLAG_2018", "")
+
+                        fgts_str = (
+                            f"➤ CPF: {cpf_beneficiado}\n"
+                            f"➤ Cadastro: {id_cadastro}\n"
+                            f"➤ Data Inclusão: {data_fgts}\n"
+                            f"➤ 2017: {flag_2017}\n"
+                            f"➤ 2018: {flag_2018}\n"
+                        ).strip() 
+                    else:
+                        fgts_str = "SEM INFORMAÇÃO"
+
+
                 embed = discord.Embed(title='')
 
-                embed.set_author(name='ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤCONSULTA DE CPFㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ', icon_url='')
+                embed.set_author(name='ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤCONSULTA DE CPFㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ', icon_url='')
 
-                embed.add_field(name='• CPF', value=cpf_info.get('CPF') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• SITUAÇÃO', value=cpf_info.get('CD_SIT_CAD') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• RG', value=cpf_info.get('RG') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• ORGAO EMISSOR RG', value=cpf_info.get('ORGAO_EMISSOR') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• UF EMISSAO RG', value=cpf_info.get('UF_EMISSAO') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• CNS', value=cpf_info.get('CNS') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• TÍTULO ELEITORAL', value=cpf_info.get('TITULO_ELEITOR') or 'SEM INFORMAÇÃO', inline=False)               
-                embed.add_field(name='• NOME', value=cpf_info.get('NOME') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• SEXO', value=cpf_info.get('SEXO') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• DATA DE NASCIMENTO', value=cpf_info.get('NASC') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• IDADE', value=(f"{idade} ANOS" if idade else "SEM INFORMAÇÃO"),inline=False)
-                embed.add_field(name='• ESTADO CIVÍL', value=cpf_info.get('ESTCIV') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• NACIONALIDADE', value=cpf_info.get('NACIONALID') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• NOME DA MÃE', value=cpf_info.get('NOME_MAE') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• NOME DO PAI', value=cpf_info.get('NOME_PAI') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• MUNICIPIO DE NASCIMENTO', value=cpf_info.get('MUNICIPIO_NASCIMENTO') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• ENDEREÇOS', value=enderecos_str, inline=False)
-                embed.add_field(name='• TELEFONES', value=telefone_str, inline=False)
-                embed.add_field(name='• E-MAIL', value=cpf_info.get('E-MAIL') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• OCUPAÇÃO', value=cpf_info.get('OCUPACAO').upper() or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• RENDA', value=(f"APROXIMADAMENTE R$ {renda} " if renda else "SEM INFORMAÇÃO"), inline=False)
-                embed.add_field(name='• PODER AQUISITIVO', value=renda_str, inline=False)
-                embed.add_field(name='• SCORES', value=score_str, inline=False)
-                embed.add_field(name='• MOSAICS', value=mosaic_str, inline=False)
-                embed.add_field(name='• FALECIMENTO', value=cpf_info.get('FALECIMENTO') or 'SEM INFORMAÇÃO', inline=False)
+                embed.add_field(name='Nome', value=cpf_info.get('NOME') or 'Sem Informação', inline=False)
+                embed.add_field(name='CPF', value=cpf_info.get('CPF') or 'Sem Informação', inline=True)
+                embed.add_field(name='Nascimento', value=cpf_info.get('NASC') or 'Sem Informação', inline=True)
+                embed.add_field(name='Idade', value=cpf_info.get('IDADE') or 'Sem Informação', inline=True)
+                embed.add_field(name='Estado Civil', value=cpf_info.get('ESTCIV') or 'Sem Informação', inline=True)
+                embed.add_field(name='Sexo', value=cpf_info.get('SEXO') or 'Sem Informação', inline=True)
+                embed.add_field(name='Nacionalidade', value=cpf_info.get('NACIONALID') or 'Sem Informação', inline=True)
+                embed.add_field(name='Naturalidade', value=cpf_info.get('MUNICIPIO_NASCIMENTO') or 'Sem Informação', inline=True)                
+                embed.add_field(name='Escolaridade', value=cpf_info.get('ESCOLARIDADE') or 'Sem Informação', inline=True)                
+                embed.add_field(name='Profissão', value=cpf_info.get('OCUPACAO').upper() or 'Sem Informação', inline=True)
+                embed.add_field(name='Data de Ocupação', value=cpf_info.get('OCUPACAO_DATA').upper() or 'Sem Informação', inline=True)
+                embed.add_field(name='Informação de CBO', value=cpf_info.get('CBO').upper() or 'Sem Informação', inline=True)
+                embed.add_field(name='E-mail', value=cpf_info.get('INFORMACOES_EMAIL', {}).get('EMAIL', 'Sem Informação'), inline=True)              
+                embed.add_field(name='Nome da Mãe', value=cpf_info.get('NOME_MAE') or 'Sem Informação', inline=True)
+                embed.add_field(name='Nome do Pai', value=cpf_info.get('NOME_PAI') or 'Sem Informação', inline=True)
+                embed.add_field(name='Situação CPF', value=cpf_info.get('CD_SIT_CAD') or 'Sem Informação', inline=True)
+                embed.add_field(name='Data de Situação', value=cpf_info.get('DT_SIT_CAD') or 'Sem Informação', inline=True)
+                embed.add_field(name='Óbito', value=cpf_info.get('OBITO') or 'Sem Informação', inline=True)
+                embed.add_field(name='Data de Óbito', value=cpf_info.get('DT_OB') or 'Sem Informação', inline=True)
+                embed.add_field(name='CNS', value=cpf_info.get('CNS') or 'Sem Informação', inline=True)
+                embed.add_field(name='PIS', value=cpf_info.get('PIS') or 'Sem Informação', inline=True)
+                embed.add_field(name='NIS', value=cpf_info.get('NIS') or 'Sem Informação', inline=True)  
+                embed.add_field(name='RG', value=cpf_info.get('INFORMACOES_RG', {}).get('RG', 'Sem Informação'), inline=True)
+                embed.add_field(name='Órgão Emissor RG', value=cpf_info.get('INFORMACOES_RG', {}).get('ORGAO_EMISSOR', 'Sem Informação'), inline=True)
+                embed.add_field(name='UF Emissão RG', value=cpf_info.get('INFORMACOES_RG', {}).get('UF_EMISSAO', 'Sem Informação'), inline=True)
+
+                await ctx.send(embed=embed)
+
+                embed = discord.Embed(title='ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ')
+                embed.add_field(name='Título Eleitoral', value=cpf_info.get('INFORMACOES_TSE', {}).get('TITULO_ELEITOR', 'Sem Informação'), inline=True)
+                embed.add_field(name='Zona Eleitoral', value=cpf_info.get('INFORMACOES_TSE', {}).get('ZONA', 'Sem Informação'), inline=True)
+                embed.add_field(name='Seção Eleitoral', value=cpf_info.get('INFORMACOES_TSE', {}).get('SECAO', 'Sem Informação'), inline=True)
+                embed.add_field(name='Poder Aquisitivo', value=renda_str, inline=True)
+                embed.add_field(name='Scores', value=score_str, inline=True)
+                embed.add_field(name='Mosaic', value=mosaic_str, inline=True)
+                embed.add_field(name='Parente', value=parente_str, inline=True)
+                embed.add_field(name='Conjugê', value=conjuge_str, inline=True)
+                embed.add_field(name='Informação FGTS', value=fgts_str, inline=True)
+                embed.add_field(name='Imposto de Renda', value=rfb_str, inline=True)
+                embed.add_field(name="Ensino Superior", value=superior_str, inline=True) 
+                embed.add_field(name='Telefones', value=telefone_str, inline=True)
+                embed.add_field(name='Endereços', value=enderecos_str, inline=False)
 
                 embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
 
@@ -737,188 +862,6 @@ async def cpf(ctx, *, cpf=None):
 
         await ctx.send(embed=embed)
 
-@client.command()
-async def cpf3(ctx, *, cpf3=None):
-
-    if not cpf:
-        embed = discord.Embed(title="")
-        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO DE CPF', icon_url='')
-        embed.add_field(name="Use o comando: `./cpf3` e o {CPF} que deseja.", value='*Exemplo: `./cpf3` 123.456.789-12*', inline=False)
-        await ctx.send(embed=embed)
-        return
-
-
-    cpf_formatado = cpf.strip()
-    data = f"http://127.0.0.1:44340/alienlabs/api/database/serasa/full/search?CPF={cpf_formatado}"
-
-    headers = {"apikey": API_KEY}
-
-    response = requests.get(data, headers=headers)
-    try:
-        if response.status_code == 200:
-            data = response.json()
-
-            if len(data) > 0:
-                cpf_info = data[0]
-
-                idade = cpf_info.get('IDADE')
-
-##################### FIELD ENDEREÇOS
-
-                enderecos_str = ""
-
-                enderecos = cpf_info.get('ENDERECOS', [])
-                for endereco in enderecos:
-                    rua = endereco.get('rua')
-                    numero = endereco.get('numero')
-                    bairro = endereco.get('bairro')
-                    cidade = endereco.get('cidade')
-                    uf = endereco.get('uf')
-                    cep = endereco.get('cep')
-
-                    enderecos_str += f"{rua}, {numero}, {bairro}, {cidade}, {uf}, {cep}\n"
-
-                if not enderecos_str.strip():
-                    enderecos_str = "SEM INFORMAÇÃO"
-
-##################### FIELD TELEFONE
-
-                telefone_str = ""
-
-                telefone_principal = cpf_info.get('TELEFONE', 'SEM INFORMAÇÃO')
-                telefone_secundario = cpf_info.get('TELEFONE_SECUNDARIO', 'SEM INFORMAÇÃO')
-
-                if telefone_principal != 'SEM INFORMAÇÃO':
-                    telefone_str += f"{telefone_principal}\n"
-
-                if telefone_secundario != 'SEM INFORMAÇÃO':
-                    telefone_str += f"{telefone_secundario}\n"
-
-                telefones_normais = []
-                telefones_fixos = []
-
-                telefones = cpf_info.get('OUTROS_TELEFONES', [])
-                for telefone_info in telefones:
-                    telefone = telefone_info.get('telefone') or 'SEM INFORMAÇÃO'
-                    telefone_fixo = telefone_info.get('telefone_fixo') or 'SEM INFORMAÇÃO'  # Assume booleano ou indicador
-
-                    if telefone_fixo:
-                        telefones_fixos.append(f"{telefone}")
-                    else:
-                        telefones_normais.append(f"{telefone}")
-
-                for telefone in telefones_normais:
-                    telefone_str += f"{telefone}\n"
-
-                for telefone in telefones_fixos:
-                    telefone_str += f"{telefone}\n"
-
-                if not telefone_str.strip():
-                    telefone_str = "SEM INFORMAÇÃO"
-
-##################### FIELD RENDA
-
-                renda_info = cpf_info.get("RENDA_DESCRICAO", {})
-
-                if renda_info:
-                    faixa_poder_aquisitivo = renda_info.get("FAIXA_PODER_AQUISITIVO", "SEM INFORMAÇÃO")
-                    renda_poder_aquisitivo = renda_info.get("RENDA_PODER_AQUISITIVO", "SEM INFORMAÇÃO")
-
-                    renda_str = (
-                        f"`➤ PODER AQUISITIVO: {renda_poder_aquisitivo}`\n"
-                        f"`➤ FAIXA DE RENDA: {faixa_poder_aquisitivo}`")
-                else:
-                    renda_str = "SEM INFORMAÇÃO"
-
-                renda = cpf_info.get('RENDA')
-
-##################### FIELD SCORE
-
-                score_info = cpf_info.get("SCORE_ORGAOS", {})
-
-                if score_info:
-                    csb8_score_str = score_info.get("CSB8", "SEM INFORMAÇÃO")
-                    csb8_faixa_str = score_info.get("CSB8_FAIXA", "SEM INFORMAÇÃO")
-                    csba_score_str = score_info.get("CSBA", "SEM INFORMAÇÃO")
-                    csba_faixa_str = score_info.get("CSBA_FAIXA", "SEM INFORMAÇÃO")
-
-                    score_str = (
-                        f"`➤ CSB8 SCORE: {csb8_score_str}`\n"
-                        f"`➤ CSB8 FAIXA DE SCORE: {csb8_faixa_str}`\n"
-                        f"`➤ CSBA SCORE: {csba_score_str}`\n"
-                        f"`➤ CSBA FAIXA DE SCORE: {csba_faixa_str}`")
-                else:
-                    score_str = "SEM INFORMAÇÃO"
-
-##################### FIELD MOSAIC
-
-                mosaic_info = cpf_info.get("MOSAIC", {})
-
-                if mosaic_info:
-                    desc_mosaic = mosaic_info.get("DESCRICAO_MOSAIC", "SEM INFORMAÇÃO")
-                    desc_mosaic_secund = mosaic_info.get("DESCRICAO_MOSAIC_SECUNDARIO", "SEM INFORMAÇÃO")
-                    desc_mosaic_novo = mosaic_info.get("DESCRICAO_MOSAIC_NOVO", "SEM INFORMAÇÃO")
-
-                    mosaic_str = (
-                        f"`➤ MOSAIC: {desc_mosaic}`\n"
-                        f"`➤ MOSAIC SECUNDÁRIO: {desc_mosaic_secund}`\n"
-                        f"`➤ MOSAIC NOVO: {desc_mosaic_novo}`")
-
-                else:
-                    mosaic_str = "SEM INFORMAÇÃO"
-
-                embed = discord.Embed(title='')
-
-                embed.set_author(name='ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤCONSULTA DE CPFㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ', icon_url='')
-
-                embed.add_field(name='• CPF', value=cpf_info.get('CPF') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• SITUAÇÃO', value=cpf_info.get('CD_SIT_CAD') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• RG', value=cpf_info.get('RG') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• ORGAO EMISSOR RG', value=cpf_info.get('ORGAO_EMISSOR') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• UF EMISSAO RG', value=cpf_info.get('UF_EMISSAO') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• CNS', value=cpf_info.get('CNS') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• TÍTULO ELEITORAL', value=cpf_info.get('TITULO_ELEITOR') or 'SEM INFORMAÇÃO', inline=False)               
-                embed.add_field(name='• NOME', value=cpf_info.get('NOME') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• SEXO', value=cpf_info.get('SEXO') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• DATA DE NASCIMENTO', value=cpf_info.get('NASC') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• IDADE', value=(f"{idade} ANOS" if idade else "SEM INFORMAÇÃO"),inline=False)
-                embed.add_field(name='• ESTADO CIVÍL', value=cpf_info.get('ESTCIV') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• NACIONALIDADE', value=cpf_info.get('NACIONALID') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• NOME DA MÃE', value=cpf_info.get('NOME_MAE') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• NOME DO PAI', value=cpf_info.get('NOME_PAI') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• MUNICIPIO DE NASCIMENTO', value=cpf_info.get('MUNICIPIO_NASCIMENTO') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• ENDEREÇOS', value=enderecos_str, inline=False)
-                embed.add_field(name='• TELEFONES', value=telefone_str, inline=False)
-                embed.add_field(name='• E-MAIL', value=cpf_info.get('E-MAIL') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• OCUPAÇÃO', value=cpf_info.get('OCUPACAO').upper() or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• RENDA', value=(f"APROXIMADAMENTE R$ {renda} " if renda else "SEM INFORMAÇÃO"), inline=False)
-                embed.add_field(name='• PODER AQUISITIVO', value=renda_str, inline=False)
-                embed.add_field(name='• SCORES', value=score_str, inline=False)
-                embed.add_field(name='• MOSAICS', value=mosaic_str, inline=False)
-                embed.add_field(name='• FALECIMENTO', value=cpf_info.get('FALECIMENTO') or 'SEM INFORMAÇÃO', inline=False)
-
-                embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
-
-                await ctx.send(embed=embed)
-            else:
-                embed = discord.Embed(title="")
-                embed.set_author(name=f'CPF NÃO ENCONTRADO!', icon_url='')
-
-                await ctx.send(embed=embed)
-        else:
-            embed = discord.Embed(title="")
-            embed.set_author(name=f'CPF NÃO ENCONTRADO! {response.status_code}', icon_url='')
-
-            await ctx.send(embed=embed)
-
-    except Exception as e:
-        embed = discord.Embed(title='')
-        embed.set_author(name=f'CPF NÃO ENCONTRADO! {response.status_code}', icon_url='')
-
-        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO DE CPF', icon_url='')
-        embed.add_field(name="Use o comando: `./cpf` e o {CPF} que deseja.", value='*Exemplo: `./cpf` 123.456.789-12*', inline=False)
-
-        await ctx.send(embed=embed)
 
 @client.command()
 async def mae(ctx, *, mae=None):
@@ -979,7 +922,6 @@ async def mae(ctx, *, mae=None):
 
         await ctx.send(embed=embed)
 
-
 @client.command()
 async def pai(ctx, *, pai=None):
 
@@ -1039,7 +981,6 @@ async def pai(ctx, *, pai=None):
         embed.add_field(name="Use o comando: `./pai` e o nome do {PAI} que deseja.", value='*Exemplo: `./pai` Fulano De Jesus Matos*', inline=False)
 
         await ctx.send(embed=embed)
-
 
 @client.command()
 async def telefone(ctx, *, telefone=None):
@@ -1630,17 +1571,18 @@ async def covid(ctx, covid = None):
 @client.command()
 async def cep(ctx, cep=None):
 
-    if not cep:
+    MAPS_API = os.getenv("GOOGLE_MAPS_API_KEY")
 
+    if not cep:
         embed = discord.Embed(title='')
         embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO CEP', icon_url='')
         embed.add_field(name="Use o comando: `/cep` e o {CEP} que deseja.", value='*Exemplo*: `/cep 70150904`', inline=False)
         embed.add_field(name="Observação:", value='*Não utilize pontos, hifens e caracteres especiais*', inline=False)      
         await ctx.send(embed=embed)
-
         return
 
-    data = requests.get(f"https://viacep.com.br/ws/{cep}/json/").json()
+    # Requisição para a API de CEP
+    data = requests.get(f"https://cep.awesomeapi.com.br/json/{cep}").json()
 
     if 'erro' in data:
         embed = discord.Embed(title='')
@@ -1648,20 +1590,27 @@ async def cep(ctx, cep=None):
         await ctx.send(embed=embed)
         return
 
+    latitude = data.get('lat')
+    longitude = data.get('lng')
+
+    maps_link = f"https://www.google.com/maps?q={latitude},{longitude}"
+    mapa_url = f"https://maps.googleapis.com/maps/api/staticmap?center={latitude},{longitude}&zoom=15&size=600x300&markers=color:red%7C{latitude},{longitude}&key={MAPS_API}"
+
     embed = discord.Embed(title='')
 
     embed.set_author(name='ㅤㅤㅤㅤㅤㅤㅤㅤCONSULTA DE CEPㅤㅤㅤㅤㅤㅤㅤㅤ', icon_url='') #----->> TÍTULO DO CÓDIGO
 
     embed.add_field(name="• CEP", value=data['cep'], inline=False)
-    embed.add_field(name="• NOME DA RUA", value=data['logradouro'], inline=False)
-    embed.add_field(name="• BAIRRO", value=data['bairro'], inline=False)
-    embed.add_field(name="• CIDADE", value=data['localidade'], inline=False)
-    embed.add_field(name="• ESTADO", value=data['uf'], inline=False)
-    embed.add_field(name="• IBGE", value=data['ibge'], inline=False)
+    embed.add_field(name="• NOME DA RUA", value=data['address'], inline=False)
+    embed.add_field(name="• BAIRRO", value=data['district'], inline=False)
+    embed.add_field(name="• CIDADE", value=data['city'], inline=False)
+    embed.add_field(name="• ESTADO", value=data['state'], inline=False)
+    embed.add_field(name="• IBGE", value=data['city_ibge'], inline=False)
     embed.add_field(name="• DDD", value=data['ddd'], inline=False)
+    embed.add_field(name="• LOCALIZAÇÃO", value=f"[{latitude},{longitude}]({maps_link})", inline=False)
+    embed.set_image(url=mapa_url)  # Adiciona a imagem do mapa
 
-    embed.add_field(name="ㅤ", value='👽ﾠ**By Whois Alien**', inline=False)             
-    embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
+    embed.set_footer(text=f'Requested By {ctx.author}\nWhois Alien © All Rights Reserved', icon_url='')
 
     await ctx.send(embed=embed)
 
@@ -2461,5 +2410,26 @@ async def repositorio(ctx):
     await ctx.send("https://github.com/cristopherrissardi/Whois-Alien-Bot")
 
 
+
+@client.command()
+async def genkey(ctx):
+    timestamp = datetime.now().strftime('%d/%m/%Y - %H:%M:%S')
+    
+    embed = discord.Embed(title="Chave gerada com Sucesso!")
+    embed.add_field(name="", value='Sua chave foi enviada em seu privado!', inline=False)             
+    await ctx.send(embed=embed)
+    
+    key = f"{secrets.token_hex(4)}-{secrets.token_hex(4)}-{secrets.token_hex(4)}-{secrets.token_hex(4)}"
+    
+    embed = discord.Embed(title="")
+    embed.set_author(name=f'', icon_url='')
+    embed.add_field(name="", value=key, inline=False)
+    embed.set_footer(text=f'Generated By {ctx.author} in {timestamp}', icon_url='')
+    
+
+    await ctx.author.send(embed=embed)
+
+
+ 
 bot_token = os.getenv("BOT_TOKEN")
 client.run(bot_token)
