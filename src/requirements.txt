@@ -1,2 +1,7 @@
-discord
+discord.py
+python-dotenv
 requests
+nest-asyncio
+aiohttp
+faker
+leakcheck
