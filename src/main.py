@@ -1,16 +1,9 @@
 ##=====================================================>>> BIBLIOTECAS IMPORTADAS <<<=======================================================##
-from ast import main
-from asyncio import tasks
 from discord.ext import commands, tasks
-from ntpath import join
-from optparse import Values
-from dataclasses import replace
 from dotenv import load_dotenv 
-from typing import Text
 from datetime import datetime
 import discord   
-import random
-import requests  
+import requests
 import os 
 import string
 import random
@@ -23,7 +16,8 @@ import secrets
 from faker import Faker
 from leakcheck import LeakCheckAPI_Public
 import hashlib
-
+import base64
+from io import BytesIO
 
 fake = Faker("pt_BR")
 
@@ -472,7 +466,6 @@ async def cpf1(ctx, *, cpf1=None):
         embed.add_field(name="Use o comando: `./cpf1` e o {CPF} que deseja.", value='*Exemplo: `./cpf1` 123.456.789-12*', inline=False)
         await ctx.send(embed=embed)
         return
-
 
     cpf_formatado = cpf1.strip()
     data = f"http://127.0.0.1:44340/alienlabs/api/database/serasa/basic/search?cpf={cpf_formatado}"
@@ -1267,7 +1260,6 @@ async def cep_pessoas(ctx, *, cep_pessoas=None):
 
         await ctx.send(embed=embed)
 
-
 @client.command()
 async def placa(ctx, *, placa=None):
 
@@ -1388,6 +1380,61 @@ async def placa(ctx, *, placa=None):
 
         embed = discord.Embed(title="")
         embed.set_author(name=f'ㅤㅤㅤErro inesperado: {e}ㅤㅤㅤ', icon_url='')
+        await ctx.send(embed=embed)
+
+@client.command()
+async def foto(ctx, *, foto=None):
+    if not foto:
+        embed = discord.Embed(title="")
+        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO DE FOTO', icon_url='')
+        embed.add_field(name="Use o comando: `./foto` e o {CPF} que deseja.", value='*Exemplo: `./foto` 123.456.789-12*', inline=False)
+        await ctx.send(embed=embed)
+        return
+
+    cpf_formatado = foto.strip()
+    data = f"http://127.0.0.1:44340//alienlabs/api/database/fotos/rj/search?CPF={cpf_formatado}"
+
+    headers = {"apikey": API_KEY}
+    response = requests.get(data, headers=headers)
+
+    try:
+        if response.status_code == 200:
+            data = response.json()
+
+            if len(data) > 0:
+                cpf_info = data[0]
+                foto_base64 = cpf_info.get("FOTO")
+
+                embed = discord.Embed(title='')
+                embed.set_author(name='ㅤㅤㅤCONSULTA DE FOTO RJㅤㅤㅤ', icon_url='')
+                embed.add_field(name="• NOME", value=cpf_info.get('NOME_COMPLETO') or 'SEM INFORMAÇÃO'.upper(), inline=False)
+                embed.add_field(name='• CPF', value=cpf_info.get('CPF') or 'SEM INFORMAÇÃO', inline=False)
+                embed.add_field(name='• NASCIMENTO', value=cpf_info.get('DT_NASCIMENTO') or 'SEM INFORMAÇÃO', inline=False)
+
+                file = None
+                if foto_base64:
+                    # Decodifica a imagem
+                    image_bytes = base64.b64decode(foto_base64)
+                    image_file = BytesIO(image_bytes)
+                    image_file.seek(0)
+
+                    # Cria o arquivo para enviar
+                    file = discord.File(image_file, filename="foto.png")
+                    embed.set_image(url="attachment://foto.png")  # Define a imagem do embed usando o anexo
+
+                embed.add_field(name='', value='', inline=False)
+                embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
+                await ctx.send(embed=embed, file=file if file else None)
+
+        else:
+            embed = discord.Embed(title="")
+            embed.set_author(name=f'ㅤㅤㅤPESSOA NÃO ENCONTRADA!ㅤㅤㅤ', icon_url='')
+            await ctx.send(embed=embed)
+
+    except Exception as e:
+        embed = discord.Embed(title="")
+        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO DE FOTO', icon_url='')
+        embed.add_field(name="Use o comando: `./foto` e o {CPF} que deseja.", value='*Exemplo: `/foto` 123.456.789-12*', inline=False)
         await ctx.send(embed=embed)
 
 @client.command()
@@ -2314,6 +2361,7 @@ async def gerar_usr(ctx):
 
     try:
         embed = discord.Embed(title='')
+
         embed.set_author(name='USERNAME GERADO COM SUCESSO', icon_url='')
         embed.add_field(name="", value=fake.user_name(), inline=False)
         embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
@@ -2553,6 +2601,7 @@ async def gerar_data(ctx):
 @client.command()
 async def gerar_cnpj(ctx):
 
+    global embed
     try:
         embed = discord.Embed(title='')
         embed.set_author(name='CNPJ GERADO COM SUCESSO', icon_url='')
@@ -2569,6 +2618,7 @@ async def gerar_cnpj(ctx):
 @client.command()
 async def gerar_cor(ctx):
 
+    global embed
     cor = fake.color()
 
     try:
