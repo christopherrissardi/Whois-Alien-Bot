@@ -87,19 +87,6 @@ def convert_info(value):
     return value
 
 @client.command()
-async def codigo(ctx):
-    # Defina o código que será enviado dentro do bloco de código
-    codigo = """```python
-def ola_mundo():
-    print("Olá, mundo!")
-ola_mundo()
-```"""
-    
-    # Envia o bloco de código para o canal
-    await ctx.send(codigo)
-
-
-@client.command()
 async def userinfo(ctx, member: discord.Member):
     # Obtém informações do usuário
     user_id = member.id
@@ -117,7 +104,7 @@ async def userinfo(ctx, member: discord.Member):
     embed.add_field(name="Entrou no servidor em", value=joined_at.strftime("%d/%m/%Y %H:%M:%S"), inline=False)
     embed.set_image(url=avatar_url)
     # Envia o embed no canal onde o comando foi chamado
-    await ctx.send(embed=embed)
+    await ctx.reply(embed=embed)
 
 
 
@@ -129,7 +116,7 @@ async def avatar(ctx, member: discord.Member):
     embed = discord.Embed(title=f"Avatar de {member.display_name}")
     embed.set_image(url=avatar_url)
     embed.set_footer(text=f"Solicitado por @{ctx.author.display_name}", icon_url="")
-    await ctx.send(embed=embed)
+    await ctx.reply(embed=embed)
 
 
 
@@ -142,14 +129,14 @@ async def clear(ctx, amount: int):
         if amount <= 0 or amount > 100:
 
             embed = discord.Embed(title='Não foi possível excluir as mensagens!', description='Por favor, forneça um número entre 1 e 100 para limpar mensagens.')
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed)
         else:
             await ctx.channel.purge(limit=amount + 1)
             embed = discord.Embed(title='Limpeza de Mensagens feita!', description=f'{amount} mensagens foram excluídas.')
             await ctx.send(embed=embed, delete_after=5)
     else:
         embed = discord.Embed(title='',description='Sai dai bostinha, você não tem permissão para limpar as mensagens.',)
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
 @clear.error 
 async def clear_error(ctx, error):
@@ -161,14 +148,14 @@ async def kick(ctx, member : discord.Member, *, reason=None):
     await member.kick(reason=reason)
 
     embed = discord.Embed(title=f'Usuário Expulso: {member.name}', description=f'O usuário {member.mention} foi expulso do servidor por ser babaca!')
-    await ctx.send(embed=embed)
+    await ctx.reply(embed=embed)
 
 @client.command()
 async def ban(ctx, member : discord.Member, *, reason=None):
     await member.ban(reason=reason)
 
     embed = discord.Embed(title=f'Usuário Banido: {member.name}', description=f'O usuário {member.mention} foi bnido do servidor por ser otário e babaca!')
-    await ctx.send(embed=embed)
+    await ctx.reply(embed=embed)
 
 @client.command()
 async def unban(ctx, *, member):
@@ -225,7 +212,7 @@ async def ping(ctx, ping_host=None):
         embed.set_author(name='ㅤㅤㅤCONSULTA DE PINGㅤㅤㅤㅤ', icon_url='')
         embed.set_footer(text=f'Requested By {ctx.author}\nWhois Alien © All Rights Reserved', icon_url='')
 
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
     else:
         view_dns_key = os.getenv("VIEWDNS_TOKEN")
@@ -243,7 +230,7 @@ async def ping(ctx, ping_host=None):
                 
                 if not replies:
                     embed.set_author(name="NENHUMA RESPOSTA DE PING FOI ENCONTRADA.", icon_url='')
-                    await ctx.send(embed=embed)
+                    await ctx.reply(embed=embed)
                     return
 
                 for ping_info in replies:
@@ -255,14 +242,14 @@ async def ping(ctx, ping_host=None):
 
                 embed.set_footer(text=f'Requested By {ctx.author}\nWhois Alien © All Rights Reserved', icon_url='')
 
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed)
 
         except Exception as e:
             embed = discord.Embed(title="")
             embed.add_field(name="", value=f"Ocorreu um erro ao consultar o servidor: {str(e)}", inline=False)
             embed.set_author(name='Erro na Resposta da API', icon_url='')
 
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed)
 
 @client.command() 
 async def termos(ctx):
@@ -286,7 +273,7 @@ async def termos(ctx):
     embed.add_field(name="\n", value="\n", inline=False)    
     embed.set_footer(text='Termos e políticas elaboradas por offalien\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
 
-    await ctx.send(embed=embed)
+    await ctx.reply(embed=embed)
 
 @client.command() 
 async def regras(ctx):
@@ -315,7 +302,7 @@ async def regras(ctx):
     embed.add_field(name="\n", value="\n", inline=False)
     embed.set_footer(text='Regras elaboradas por offalien\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
 
-    await ctx.send(embed=embed)
+    await ctx.reply(embed=embed)
 
 @client.command()
 async def consultas(ctx):
@@ -353,7 +340,7 @@ async def consultas(ctx):
     embed.set_image(url='https://i.gifer.com/Cewn.gif')
     embed.set_footer(text='Whois Alien © All Rights Reserved', icon_url='')
 
-    await ctx.send(embed=embed)
+    await ctx.reply(embed=embed)
 
 @client.command()
 async def ajuda(ctx):
@@ -392,9 +379,7 @@ async def admin(ctx):
     embed.add_field(name="✔️ Comando de Limpar mensagens", value="Use o comando `./clear` e em seguida a quantidade de mensagens que deseja limpar. *Exemplo ./clear 10*", inline=False)
     embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
 
-    await ctx.send(embed=embed); 
-
-
+    await ctx.reply(embed=embed); 
 
 
 @client.command()
@@ -403,8 +388,11 @@ async def nome(ctx, *, nome=None):
     if not nome: 
         embed = discord.Embed(title="")
         embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO DE NOME', icon_url='')
+        embed.add_field(name="Base de dados: **Serasa**", value="", inline=False)
+        embed.add_field(name="Informações de retorno:", value="NOME, CPF, DATA DE NASCIMENTO, SEXO e IDADE", inline=False)
+        embed.add_field(name="Status da API:", value="🟢 API ONLINE", inline=False)
         embed.add_field(name="Use o comando: `./nome` e o {NOME} que deseja.", value='*Exemplo: `./nome` Fulano dos Santos*', inline=False)
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
         return  
 
     nome_formatado = nome.strip().replace(' ', '%20')
@@ -440,21 +428,19 @@ async def nome(ctx, *, nome=None):
                 embed.add_field(name='• SEXO', value=result.get('sexo') or 'SEM INFORMAÇÃO', inline=False)
                 embed.add_field(name='• DATA DE NASCIMENTO', value=result.get('data_nascimento') or 'SEM INFORMAÇÃO', inline=False)
                 embed.add_field(name='• IDADE', value=result.get('idade') or 'SEM INFORMAÇÃO', inline=False)
-
-                embed.add_field(name="ㅤ", value='👽ﾠ**By Whois Alien**', inline=False)
                 embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
 
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed)
         else:
             embed = discord.Embed(title="")
             embed.set_author(name=f'ㅤㅤㅤNOME NÃO ENCONTRADO!ㅤㅤㅤ', icon_url='')
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed)
 
     except Exception as e:       
         embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO DE NOME', icon_url='')
         embed.add_field(name="Use o comando: `./nome` e o {NOME} que deseja consultar.", value='*Exemplo: `./nome` Fulano dos Santos*', inline=False)
 
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
 
 @client.command()
@@ -462,9 +448,12 @@ async def cpf1(ctx, *, cpf1=None):
 
     if not cpf1:
         embed = discord.Embed(title="")
-        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO DE CPF', icon_url='')
+        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO DE CPF 1', icon_url='')
+        embed.add_field(name="Base de dados: **Serasa**", value="", inline=False)
+        embed.add_field(name="Informações de retorno:", value="NOME, CPF, DATA DE NASCIMENTO, SEXO e IDADE", inline=False)
+        embed.add_field(name="Status da API:", value="🟢 API ONLINE", inline=False)
         embed.add_field(name="Use o comando: `./cpf1` e o {CPF} que deseja.", value='*Exemplo: `./cpf1` 123.456.789-12*', inline=False)
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
         return
 
     cpf_formatado = cpf1.strip()
@@ -490,23 +479,19 @@ async def cpf1(ctx, *, cpf1=None):
                 embed.add_field(name='• SEXO', value=cpf_info.get('sexo') or 'SEM INFORMAÇÃO', inline=False)
                 embed.add_field(name='• DATA DE NASCIMENTO', value=cpf_info.get('data_nascimento') or 'SEM INFORMAÇÃO', inline=False)
                 embed.add_field(name='• IDADE', value=cpf_info.get('idade') or 'SEM INFORMAÇÃO', inline=False)
-
-                embed.add_field(name="ㅤ", value='👽ﾠ**By Whois Alien**', inline=False)
                 embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
 
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed)
         else:
             embed = discord.Embed(title="")
             embed.set_author(name=f'ㅤㅤㅤCPF NÃO ENCONTRADO!ㅤㅤㅤ', icon_url='')
 
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed)
 
     except Exception as e:
 
-        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO DE CPF', icon_url='')
-        embed.add_field(name="Use o comando: `./cpf2` e o {CPF} que deseja.", value='*Exemplo: `/cpf2` 123.456.789-12*', inline=False)
-
-        await ctx.send(embed=embed)
+        embed.set_author(name=f'Erro na consulta {response.status_code}', icon_url='')
+        await ctx.reply(embed=embed)
 
 
 @client.command()
@@ -514,9 +499,12 @@ async def cpf2(ctx, *, cpf2=None):
 
     if not cpf2:
         embed = discord.Embed(title="")
-        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO DE CPF', icon_url='')
+        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO DE CPF 2', icon_url='')
+        embed.add_field(name="Base de dados: **Datasus**", value="", inline=False)
+        embed.add_field(name="Informações de retorno:", value="CPF, CNS, RG, NOME, MÃE, PAI, ENDEREÇO, CIDADE DE NASCIMENTO E OUTRAS.", inline=False)
+        embed.add_field(name="Status da API:", value="🟢 API ONLINE", inline=False)        
         embed.add_field(name="Use o comando: `./cpf2` e o {CPF} que deseja.", value='*Exemplo: `./cpf2` 123.456.789-12*', inline=False)
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
         return
 
 
@@ -553,33 +541,24 @@ async def cpf2(ctx, *, cpf2=None):
                 embed.add_field(name="• CEP", value=cpf2_info.get('cep') or 'SEM INFORMAÇÃO', inline=False)
                 embed.add_field(name="• TELEFONE", value=cpf2_info.get('telefone') or 'SEM INFORMAÇÃO', inline=False)
                 embed.add_field(name="• TELEFONE SECUNDÁRIO", value=cpf2_info.get('telefoneSecundario') or 'SEM INFORMAÇÃO', inline=False)
-
-
-                embed.add_field(name="ㅤ", value='👽ﾠ**By Whois Alien**', inline=False)
                 embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
 
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed)
             else:
                 embed = discord.Embed(title="")
                 embed.set_author(name=f'CPF NÃO ENCONTRADO!', icon_url='')
 
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed)
         else:
             embed = discord.Embed(title="")
-            embed.set_author(name=f'CPF NÃO ENCONTRADO! {response.status_code}', icon_url='')
+            embed.set_author(name=f'Erro: {response.status_code}', icon_url='')
 
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed)
 
     except Exception as e:
         embed = discord.Embed(title='')
-        embed.set_author(name=f'CPF NÃO ENCONTRADO! {response.status_code}', icon_url='')
-
-        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO DE CPF', icon_url='')
-        embed.add_field(name="Use o comando: `./cpf2` e o {CPF} que deseja.", value='*Exemplo: `./cpf2` 123.456.789-12*', inline=False)
-
-        await ctx.send(embed=embed)
-
-
+        embed.set_author(name=f'Erro na consulta {response.status_code}', icon_url='')
+        await ctx.reply(embed=embed)
 
 @client.command()
 async def cpf(ctx, *, cpf=None):
@@ -587,8 +566,11 @@ async def cpf(ctx, *, cpf=None):
     if not cpf:
         embed = discord.Embed(title="")
         embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO DE CPF', icon_url='')
+        embed.add_field(name="Base de dados: **Serasa Experian**", value="", inline=False)
+        embed.add_field(name="Informações de retorno:", value="CPF, HISTÓRICO DE ENDEREÇOS, TELEFONES, PARENTES, MOSAIC ETC.", inline=False)
+        embed.add_field(name="Status da API:", value="🟢 API ONLINE", inline=False)   
         embed.add_field(name="Use o comando: `./cpf` e o {CPF} que deseja.", value='*Exemplo: `./cpf` 123.456.789-12*', inline=False)
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
         return
 
 
@@ -848,7 +830,7 @@ async def cpf(ctx, *, cpf=None):
                 embed.add_field(name='Órgão Emissor RG', value=cpf_info.get('INFORMACOES_RG', {}).get('ORGAO_EMISSOR', 'Sem Informação'), inline=True)
                 embed.add_field(name='UF Emissão RG', value=cpf_info.get('INFORMACOES_RG', {}).get('UF_EMISSAO', 'Sem Informação'), inline=True)
 
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed)
 
                 embed = discord.Embed(title='ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ')
                 embed.add_field(name='Título Eleitoral', value=cpf_info.get('INFORMACOES_TSE', {}).get('TITULO_ELEITOR', 'Sem Informação'), inline=True)
@@ -866,27 +848,19 @@ async def cpf(ctx, *, cpf=None):
                 embed.add_field(name='Endereços', value=enderecos_str, inline=False)
 
                 embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
-
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed)
+                
             else:
                 embed = discord.Embed(title="")
                 embed.set_author(name=f'CPF NÃO ENCONTRADO!', icon_url='')
-
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed)
         else:
-            embed = discord.Embed(title="")
             embed.set_author(name=f'CPF NÃO ENCONTRADO! {response.status_code}', icon_url='')
-
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed)
 
     except Exception as e:
-        embed = discord.Embed(title='')
-        embed.set_author(name=f'CPF NÃO ENCONTRADO! {response.status_code}', icon_url='')
-
-        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO DE CPF', icon_url='')
-        embed.add_field(name="Use o comando: `./cpf` e o {CPF} que deseja.", value='*Exemplo: `./cpf` 123.456.789-12*', inline=False)
-
-        await ctx.send(embed=embed)
+        embed.set_author(name=f'Erro na consulta {response.status_code}', icon_url='')
+        await ctx.reply(embed=embed)
 
 
 @client.command()
@@ -896,8 +870,11 @@ async def mae(ctx, *, mae=None):
 
         embed = discord.Embed(title="")
         embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO DE NOME', icon_url='')
+        embed.add_field(name="Base de dados: **Serasa Experian**", value="", inline=False)
+        embed.add_field(name="Informações de retorno:", value="CPF, NOME DOS FILHOS, DATA DE NASCIMENTO, E MÃE.", inline=False)
+        embed.add_field(name="Status da API:", value="🟢 API ONLINE", inline=False)   
         embed.add_field(name="Use o comando: `./mae` e o nome da {MÃE} que deseja.", value='*Exemplo: `./mae` Fulana Santos*', inline=False)
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
         return
 
     mae_formatado = mae.strip().replace(' ', '%20')
@@ -932,21 +909,16 @@ async def mae(ctx, *, mae=None):
                 embed.add_field(name='• CPF', value=result.get('CPF') or 'SEM INFORMAÇÃO', inline=False)
                 embed.add_field(name='• DATA DE NASCIMENTO', value=result.get('NASC') or 'SEM INFORMAÇÃO', inline=False)
                 embed.add_field(name='• NOME DA MÃE', value=result.get('NOME_MAE') or 'SEM INFORMAÇÃO', inline=False)
-
-                embed.add_field(name="ㅤ", value='👽ﾠ**By Whois Alien**', inline=False)
                 embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
-
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed)
         else:
             embed = discord.Embed(title="")
             embed.set_author(name=f'ㅤㅤㅤNOME DA MÃE NÃO ENCONTRADO!ㅤㅤㅤ', icon_url='')
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed)
 
     except Exception as e:       
-        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO DE NOME', icon_url='')
-        embed.add_field(name="Use o comando: `./mae` e o nome da {MÃE} que deseja.", value='*Exemplo: `./mae` Fulana da Silva Santos*', inline=False)
-
-        await ctx.send(embed=embed)
+        embed.set_author(name=f'Erro na consulta {response.status_code}', icon_url='')
+        await ctx.reply(embed=embed)
 
 @client.command()
 async def pai(ctx, *, pai=None):
@@ -955,14 +927,16 @@ async def pai(ctx, *, pai=None):
 
         embed = discord.Embed(title="")
         embed.set_author(name='ㅤㅤㅤㅤ👽 CONSULTA PELO NOME DO PAI', icon_url='')
+        embed.add_field(name="Base de dados: **Datasus**", value="", inline=False)
+        embed.add_field(name="Informações de retorno:", value="CPF, NOME DOS FILHOS, DATA DE NASCIMENTO, E PAI.", inline=False)
+        embed.add_field(name="Status da API:", value="🟢 API ONLINE", inline=False)   
         embed.add_field(name="Use o comando: `./pai` e o nome do {PAI} que deseja.", value='*Exemplo: `./pai` Fulano De Jesus Matos*', inline=False)
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
         return
 
-
     pai_formatado = pai.strip().replace(' ', '%20')
-    data = f"http://127.0.0.1:44340/alienlabs/api/database/datasus/search?pai={pai_formatado}"
 
+    data = f"http://127.0.0.1:44340/alienlabs/api/database/datasus/search?pai={pai_formatado}"
     headers = {"apikey": API_KEY}
 
     response = requests.get(data, headers=headers)
@@ -992,21 +966,17 @@ async def pai(ctx, *, pai=None):
                 embed.add_field(name='• CPF', value=result.get('cpf') or 'SEM INFORMAÇÃO', inline=False)
                 embed.add_field(name='• DATA DE NASCIMENTO', value=result.get('nascimento') or 'SEM INFORMAÇÃO', inline=False)
                 embed.add_field(name='• NOME DO PAI', value=result.get('pai') or 'SEM INFORMAÇÃO', inline=False)
-
-                embed.add_field(name="ㅤ", value='👽ﾠ**By Whois Alien**', inline=False)
                 embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
 
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed)
         else:
             embed = discord.Embed(title="")
             embed.set_author(name=f'ㅤㅤㅤNOME DO PAI NÃO ENCONTRADO!ㅤㅤㅤ', icon_url='')
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed)
 
     except Exception as e:       
-        embed.set_author(name='ㅤㅤㅤㅤ👽 CONSULTA PELO NOME DO PAI', icon_url='')
-        embed.add_field(name="Use o comando: `./pai` e o nome do {PAI} que deseja.", value='*Exemplo: `./pai` Fulano De Jesus Matos*', inline=False)
-
-        await ctx.send(embed=embed)
+        embed.set_author(name=f'Erro na consulta {response.status_code}', icon_url='')
+        await ctx.reply(embed=embed)
 
 @client.command()
 async def telefone(ctx, *, telefone=None):
@@ -1014,8 +984,11 @@ async def telefone(ctx, *, telefone=None):
     if not telefone:
         embed = discord.Embed(title="")
         embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO DE TELEFONE', icon_url='')
+        embed.add_field(name="Base de dados: **Operadoras**", value="", inline=False)
+        embed.add_field(name="Informações de retorno:", value="NOME DOS TITULARES, CPF, ENDEREÇOS E OUTROS.", inline=False)
+        embed.add_field(name="Status da API:", value="🟢 API ONLINE", inline=False)   
         embed.add_field(name="Use o comando: `./telefone` e o {TELEFONE} que deseja.", value='Exemplo: `./telefone` 11987654321', inline=False)
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
         return
 
     telefone_formatado = telefone.strip().replace(' ', '%20')
@@ -1057,20 +1030,16 @@ async def telefone(ctx, *, telefone=None):
                 embed.add_field(name='• ESTADO', value=result.get('uf') or 'SEM INFORMAÇÃO', inline=False)
                 embed.add_field(name='• CEP', value=result.get('cep') or 'SEM INFORMAÇÃO', inline=False)
                 embed.add_field(name='• OPERADORA', value=result.get('operadora') or 'SEM INFORMAÇÃO', inline=False)
-
-                embed.add_field(name="ㅤ", value='👽ﾠ**By Whois Alien**', inline=False)
                 embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
 
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed)
         else:
             embed = discord.Embed(title=f"TELEFONE NÃO ENCONTRADO! {response.status_code}")
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed)
 
     except Exception as e:       
-        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO DE TELEFONE', icon_url='')
-        embed.add_field(name="Use o comando: `./telefone` e o {TELEFONE} que deseja.", value='Exemplo: `./telefone` 11987654321', inline=False)
-
-        await ctx.send(embed=embed)
+        embed.set_author(name=f'Erro na consulta {response.status_code}', icon_url='')
+        await ctx.reply(embed=embed)
 
 @client.command()
 async def fixo(ctx, *, fixo=None):
@@ -1078,9 +1047,12 @@ async def fixo(ctx, *, fixo=None):
     if not fixo:
         embed = discord.Embed(title="")
         embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO DE TELEFONE', icon_url='')
+        embed.add_field(name="Base de dados: **Operadoras**", value="", inline=False)
+        embed.add_field(name="Informações de retorno:", value="NOME DOS TITULARES, CPF, ENDEREÇOS E OUTROS.", inline=False)
+        embed.add_field(name="Status da API:", value="🟢 API ONLINE", inline=False)   
         embed.add_field(name="Use o comando: `./fixo` e o {TELEFONE} que deseja.", value='Exemplo: `./fixo` 1833621583', inline=False)
 
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
         return
 
 
@@ -1123,21 +1095,16 @@ async def fixo(ctx, *, fixo=None):
                 embed.add_field(name='• ESTADO', value=result.get('uf') or 'SEM INFORMAÇÃO', inline=False)
                 embed.add_field(name='• CEP', value=result.get('cep') or 'SEM INFORMAÇÃO', inline=False)
                 embed.add_field(name='• OPERADORA', value=result.get('operadora') or 'SEM INFORMAÇÃO', inline=False)
-
-                embed.add_field(name="ㅤ", value='👽ﾠ**By Whois Alien**', inline=False)
                 embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
 
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed)
         else:
             embed = discord.Embed(title=f"TELEFONE NÃO ENCONTRADO! {response.status_code}")
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed)
 
     except Exception as e:       
-        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO DE TELEFONE', icon_url='')
-        embed.add_field(name="Use o comando:", value='`./fixo` e o {TELEFONE} que deseja.', inline=False)
-        embed.add_field(value='Exemplo: `./fixo` 1833621583', inline=False)
-
-        await ctx.send(embed=embed)
+        embed.set_author(name=f'Erro na consulta {response.status_code}', icon_url='')
+        await ctx.reply(embed=embed)
 
 
 @client.command()
@@ -1147,10 +1114,12 @@ async def email(ctx, *, email=None):
 
         embed = discord.Embed(title="")
         embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO DE E-MAIL', icon_url='')
+        embed.add_field(name="Base de dados: **Alien DB**", value="", inline=False)
+        embed.add_field(name="Informações de retorno:", value="NOME, CPF E E-MAIL.", inline=False)
+        embed.add_field(name="Status da API:", value="🟢 API ONLINE", inline=False)   
         embed.add_field(name="Use o comando: `./email` e o {EMAIL} que deseja.", value='*Exemplo: `./email` fulanodetal@gmail.com*', inline=False)
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
         return
-
 
     email_formatado = email.strip().replace(' ', '%20')
     data = f"http://127.0.0.1:44340/alienlabs/api/database/email/search?e-mail={email_formatado}"
@@ -1184,81 +1153,118 @@ async def email(ctx, *, email=None):
                 embed.add_field(name='• CPF', value=result.get('cpf') or 'SEM INFORMAÇÃO', inline=False)
                 embed.add_field(name='• E-MAIL', value=result.get('e-mail') or 'SEM INFORMAÇÃO', inline=False)
 
-                embed.add_field(name="ㅤ", value='👽ﾠ**By Whois Alien**', inline=False)
                 embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
 
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed)
         else:
             embed = discord.Embed(title="")
             embed.set_author(name=f'ㅤㅤㅤE-MAIL NÃO ENCONTRADO!ㅤㅤㅤ', icon_url='')
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed)
 
     except Exception as e:       
-        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO DE E-MAIL', icon_url='')
-        embed.add_field(name="Use o comando: `./email` e o {EMAIL} que deseja.", value='*Exemplo: `./email` fulanodetal@gmail.com*', inline=False)
+        embed.set_author(name=f'Erro na consulta {response.status_code}', icon_url='')
+        await ctx.reply(embed=embed)
 
-        await ctx.send(embed=embed)
+
+
 
 
 @client.command()
-async def cep_pessoas(ctx, *, cep_pessoas=None):
+async def cep(ctx, *, cep=None):
 
-    if not cep_pessoas:
+    MAPS_API = os.getenv("GOOGLE_MAPS_API_KEY")
+
+    if not cep:
         embed = discord.Embed(title="")
-        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO DE CEP', icon_url='')
-        embed.add_field(name="Use o comando: `./cep` e o {CEP} que deseja.", value='Exemplo: `./cep` 01153000', inline=False)
-        await ctx.send(embed=embed)
+        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO CEP', icon_url='')
+        embed.add_field(name="Base de dados: **CEP AwesomeAPI e Datasus**", value="", inline=False)
+        embed.add_field(name="Informações de retorno:", value="INFORMAÇÕES SOBRE O CEP E RESIDÊNTES DO CEP.", inline=False)
+        embed.add_field(name="Status das APIs:", value="🟢 APIS ONLINE", inline=False)   
+        embed.add_field(name="Use o comando: `./cep` e o {CEP} que deseja.", value='*Exemplo*: `./cep 70150904`', inline=False)
+        embed.add_field(name="Observação:", value='*Não utilize pontos, hifens e caracteres especiais*', inline=False)
+        await ctx.reply(embed=embed)
         return
 
-    cep_pessoas_formatado = cep_pessoas.strip().replace(' ', '%20')
-    data = f"http://127.0.0.1:44340/alienlabs/api/database/datasus/search?cep={cep_pessoas_formatado}"
+    # Consulta do CEP básico
 
+    cep_formatado = cep.strip()
+    cep_data = requests.get(f"https://cep.awesomeapi.com.br/json/{cep_formatado}").json()
+
+    if 'erro' in cep_data:
+        embed = discord.Embed(title='')
+        embed.set_author(name='CEP NÃO ENCONTRADO', icon_url='')
+        await ctx.reply(embed=embed)
+        return
+
+    latitude = cep_data.get('lat')
+    longitude = cep_data.get('lng')
+    maps_link = f"https://www.google.com/maps?q={latitude},{longitude}"
+    mapa_url = f"https://maps.googleapis.com/maps/api/staticmap?center={latitude},{longitude}&zoom=15&size=600x300&markers=color:red%7C{latitude},{longitude}&key={MAPS_API}"
+
+    # Embed com as informações do CEP
+    embed = discord.Embed(title='')
+    embed.set_author(name='ㅤㅤㅤㅤㅤㅤㅤㅤCONSULTA DE CEPㅤㅤㅤㅤㅤㅤㅤㅤ', icon_url='')
+    embed.add_field(name="• CEP", value=cep_data.get('cep', 'Sem Informação'), inline=False)
+    embed.add_field(name="• NOME DA RUA", value=cep_data.get('address', 'Sem Informação'), inline=False)
+    embed.add_field(name="• BAIRRO", value=cep_data.get('district', 'Sem Informação'), inline=False)
+    embed.add_field(name="• CIDADE", value=cep_data.get('city', 'Sem Informação'), inline=False)
+    embed.add_field(name="• ESTADO", value=cep_data.get('state', 'Sem Informação'), inline=False)
+    embed.add_field(name="• IBGE", value=cep_data.get('city_ibge', 'Sem Informação'), inline=False)
+    embed.add_field(name="• DDD", value=cep_data.get('ddd', 'Sem Informação'), inline=False)
+    embed.add_field(name="• LOCALIZAÇÃO", value=f"[{latitude},{longitude}]({maps_link})", inline=False)
+    embed.set_image(url=mapa_url)  # Adiciona a imagem do mapa
+    embed.set_footer(text=f'Requested By {ctx.author}\nWhois Alien © All Rights Reserved', icon_url='')
+
+    await ctx.reply(embed=embed)
+
+    # Consulta dos moradores no Datasus
+    cep_pessoas_formatado = cep.strip().replace(' ', '%20')
+    data_url = f"http://127.0.0.1:44340/alienlabs/api/database/datasus/search?cep={cep_pessoas_formatado}"
     headers = {"apikey": API_KEY}
 
-    response = requests.get(data, headers=headers)
+    response = requests.get(data_url, headers=headers)
 
-    try:
-        if response.status_code == 200:
-            data_json = response.json()
+    if response.status_code == 200:
+        data_json = response.json()
 
-            if isinstance(data_json, list) and len(data_json) > 1:
-                file_contents = ""
-                for index, result in enumerate(data_json, 1):
-                    file_contents += f"RESULTADO {index}:\n\n• NOME: {result['nome'].upper()}\n• CPF: {result['cpf']}\n• DATA DE NASCIMENTO: {result['nascimento']}\n• LOGRADOURO: {result['logradouro']}\n• NUMERO: {result['numero']}\n• CEP: {result['cep']}\n• MUNICIPIO: {result['municipio']}\n\n"
+        if isinstance(data_json, list) and len(data_json) > 1:
+            total_pessoas = len(data_json)
+            file_contents = (
+                f"ㅤㅤㅤㅤㅤㅤㅤPESSOAS RESIDÊNTES NO CEP [{cep}]ㅤㅤㅤㅤㅤㅤㅤ\n"
+                f"TOTAL DE PESSOAS ENCONTRADAS: [{total_pessoas}]\n\n"
+            )
 
-                file_contents += "\nWhois Alien © All Rights Reserved\n"
+            for index, result in enumerate(data_json, 1):
+                file_contents += (
+                    f"RESULTADO {index}:\n\n"
+                    f"• NOME: {result['nome'].upper()}\n"
+                    f"• CPF: {result['cpf']}\n"
+                    f"• DATA DE NASCIMENTO: {result['nascimento']}\n"
+                    f"• LOGRADOURO: {result['logradouro']}\n"
+                    f"• NUMERO: {result['numero']}\n"
+                    f"• CEP: {result['cep']}\n"
+                    f"• MUNICIPIO: {result['municipio']}\n\n"
+                )
 
-                file = io.StringIO(file_contents)
-                file.seek(0)
+            file_contents += "\nWhois Alien © All Rights Reserved\n"
+            file = io.StringIO(file_contents)
+            file.seek(0)
+            await ctx.reply(file=discord.File(file, filename=f"moradores_{cep}.txt"))
 
-                await ctx.send(file=discord.File(file, filename="resultados.txt"))
-            elif isinstance(data_json, dict) or (isinstance(data_json, list) and len(data_json) == 1):
-                result = data_json[0] if isinstance(data_json, list) else data_json
+        elif isinstance(data_json, dict) or (isinstance(data_json, list) and len(data_json) == 1):
+            result = data_json[0] if isinstance(data_json, list) else data_json
+            embed_pessoa = discord.Embed(title="INFORMAÇÕES DOS MORADORES", color=0x00ff00)
+            embed_pessoa.add_field(name="• NOME", value=result['nome'].upper(), inline=False)
+            embed_pessoa.add_field(name="• CPF", value=result['cpf'], inline=False)
+            embed_pessoa.add_field(name="• DATA DE NASCIMENTO", value=result['nascimento'], inline=False)
+            embed_pessoa.add_field(name="• LOGRADOURO", value=result['logradouro'], inline=False)
+            embed_pessoa.add_field(name="• NUMERO", value=result['numero'], inline=False)
+            embed_pessoa.add_field(name="• MUNICIPIO", value=result['municipio'], inline=False)
+            await ctx.reply(embed=embed_pessoa)
 
-                embed = discord.Embed(title='')
-                embed.set_author(name='ㅤㅤㅤㅤㅤㅤㅤCONSULTA DE DADOS POR CEPㅤㅤㅤㅤㅤㅤㅤㅤ', icon_url='')
-
-                embed.add_field(name='• NOME', value=result.get('nome').upper() or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• CPF', value=result.get('cpf') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• DATA DE NASCIMENTO', value=result.get('nascimento') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• LOGRADOURO', value=result.get('logradouro') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• NÚMERO', value=result.get('numero') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• CEP', value=result.get('cep') or 'SEM INFORMAÇÃO', inline=False)
-                embed.add_field(name='• MUNICIPIO', value=result.get('municipio') or 'SEM INFORMAÇÃO', inline=False)
-
-                embed.add_field(name="ㅤ", value='👽ﾠ**By Whois Alien**', inline=False)
-                embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
-
-                await ctx.send(embed=embed)
-        else:
-            embed = discord.Embed(title=f"CEP NÃO ENCONTRADO! {response.status_code}")
-            await ctx.send(embed=embed)
-
-    except Exception as e:       
-        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO DE CEP', icon_url='')
-        embed.add_field(name="Use o comando: `./cep` e o {CEP} que deseja.", value='Exemplo: `./cep` 01153000', inline=False)
-
-        await ctx.send(embed=embed)
+    else:
+        embed = discord.Embed(title=f"CEP NÃO ENCONTRADO! {response.status_code}")
+        await ctx.reply(embed=embed)
 
 @client.command()
 async def placa(ctx, *, placa=None):
@@ -1267,8 +1273,11 @@ async def placa(ctx, *, placa=None):
 
         embed = discord.Embed(title="")
         embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO DE PLACA', icon_url='')
+        embed.add_field(name="Base de dados: **Detran**", value="", inline=False)
+        embed.add_field(name="Informações de retorno:", value="INFORMAÇÕES COMPLETAS SOBRE O VEÍCULO E ÀS VEZES O PROPRIETÁRIO.", inline=False)
+        embed.add_field(name="Status da API:", value="🟢 API ONLINE", inline=False)   
         embed.add_field(name="Use o comando: `./placa` e a {PLACA} que deseja.", value='Exemplo: `./placa` ABC1234', inline=False)
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
         return
 
     placa_formatada = placa.strip().upper().replace('-', '')
@@ -1317,7 +1326,7 @@ async def placa(ctx, *, placa=None):
                 embed.add_field(name="Última atualização", value=placa_veiculo.get('ultima_atualizacao', 'Desconhecido'), inline=True)
 
                 embed.set_footer(text=f'Requested By {ctx.author}\nWhois Alien © All Rights Reserved')
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed)
 
                 embed = discord.Embed(title="")
                 embed.set_author(
@@ -1338,7 +1347,7 @@ async def placa(ctx, *, placa=None):
                 embed.add_field(name="Caixa de cambio", value=placa_veiculo.get('caixa_cambio', 'Desconhecido'), inline=True)
 
                 embed.set_footer(text=f'Requested By {ctx.author}\nWhois Alien © All Rights Reserved')
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed)
 
                 embed = discord.Embed(title="")
                 embed.set_author(
@@ -1365,30 +1374,30 @@ async def placa(ctx, *, placa=None):
                 embed.add_field(name="CPF/CNPJ", value=placa_veiculo.get('proprietario_info', {}).get('cpf', 'Desconhecido'), inline=True)
 
                 embed.set_footer(text=f'Requested By {ctx.author}\nWhois Alien © All Rights Reserved')
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed)
 
             else:
                 embed = discord.Embed(title="")
                 embed.set_author(name='PLACA NÃO ENCONTRADAㅤㅤㅤ', icon_url='')
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed)
         else:
-            embed = discord.Embed(title="")
             embed.set_author(name='ㅤㅤㅤPLACA NÃO ENCONTRADAㅤㅤㅤ', icon_url='')
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed)
 
     except Exception as e:
-
-        embed = discord.Embed(title="")
-        embed.set_author(name=f'ㅤㅤㅤErro inesperado: {e}ㅤㅤㅤ', icon_url='')
-        await ctx.send(embed=embed)
+        embed.set_author(name=f'Erro na consulta {response.status_code}', icon_url='')
+        await ctx.reply(embed=embed)
 
 @client.command()
 async def foto(ctx, *, foto=None):
     if not foto:
         embed = discord.Embed(title="")
         embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO DE FOTO', icon_url='')
+        embed.add_field(name="Base de dados: **Detran**", value="", inline=False)
+        embed.add_field(name="Informações de retorno:", value="FOTO DO ROSTO, CPF, NOME, NOME DA MÃE, DATA DE NASCIMENTO ETC.", inline=False)
+        embed.add_field(name="Status da API:", value="🟢 API ONLINE", inline=False)   
         embed.add_field(name="Use o comando: `./foto` e o {CPF} que deseja.", value='*Exemplo: `./foto` 123.456.789-12*', inline=False)
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
         return
 
     cpf_formatado = foto.strip()
@@ -1418,24 +1427,20 @@ async def foto(ctx, *, foto=None):
                     image_file = BytesIO(image_bytes)
                     image_file.seek(0)
 
-                    # Cria o arquivo para enviar
                     file = discord.File(image_file, filename="foto.png")
-                    embed.set_image(url="attachment://foto.png")  # Define a imagem do embed usando o anexo
+                    embed.set_image(url="attachment://foto.png")
 
                 embed.add_field(name='', value='', inline=False)
                 embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
                 await ctx.send(embed=embed, file=file if file else None)
-
         else:
             embed = discord.Embed(title="")
             embed.set_author(name=f'ㅤㅤㅤPESSOA NÃO ENCONTRADA!ㅤㅤㅤ', icon_url='')
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed)
 
     except Exception as e:
-        embed = discord.Embed(title="")
-        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO DE FOTO', icon_url='')
-        embed.add_field(name="Use o comando: `./foto` e o {CPF} que deseja.", value='*Exemplo: `/foto` 123.456.789-12*', inline=False)
-        await ctx.send(embed=embed)
+        embed.set_author(name=f'Erro na consulta {response.status_code}', icon_url='')
+        await ctx.reply(embed=embed)
 
 @client.command()
 async def cnpj(ctx, cnpj=None):
@@ -1444,8 +1449,11 @@ async def cnpj(ctx, cnpj=None):
 
         embed = discord.Embed(title="")
         embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO DE CNPJ', icon_url='')
+        embed.add_field(name="Base de dados: **Receita Federal**", value="", inline=False)
+        embed.add_field(name="Informações de retorno:", value="FOTO DO ROSTO, CPF, NOME, NOME DA MÃE, DATA DE NASCIMENTO ETC.", inline=False)
+        embed.add_field(name="Status da API:", value="🟢 API ONLINE", inline=False)   
         embed.add_field(name="Use o comando: `./cnpj` e a {CNPJ} que deseja.", value='Exemplo: `./cnpj` 00000000000191', inline=False)
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
         return
 
 
@@ -1466,7 +1474,7 @@ async def cnpj(ctx, cnpj=None):
         embed = discord.Embed(title='')
 
         embed.set_author(name=f'ㅤㅤㅤCNPJ NÃO ENCONTRADOㅤㅤㅤ', icon_url='')
-        return await ctx.send(embed=embed)
+        return await ctx.reply(embed=embed)
 
     def formatar_qualificacao(qualificacao):
 
@@ -1492,8 +1500,7 @@ async def cnpj(ctx, cnpj=None):
         except Exception as e:
 
             return f"- **Nome**: {nome}\n- **Qualificação**: {qualificacao}"
-
-
+        
     try:
         atividade_principal = data.get("atividade_principal", [])
         if atividade_principal:
@@ -1557,13 +1564,13 @@ async def cnpj(ctx, cnpj=None):
 
         embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
 
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
         return
 
     except Exception as e:
-        embed = discord.Embed(title='Erro na consulta')
-        embed.add_field(name="Detalhes", value=str(e), inline=False)
-        return await ctx.send(embed=embed)
+        embed = discord.Embed(title='')
+        embed.set_author(name=f'Erro na consulta {response.status_code}', icon_url='')
+        return await ctx.reply(embed=embed)
 
 
 @client.command()
@@ -1572,8 +1579,11 @@ async def ip(ctx, ip=None):
     if not ip:
         embed = discord.Embed(title='')
         embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO IPㅤㅤㅤ', icon_url='')
-        embed.add_field(name="Use o comando: `./ip` e o {IP} que deseja.", value='*Exemplo: `./ip` 127.0.0.1*', inline=False)
-        await ctx.send(embed=embed)
+        embed.add_field(name="Fonte da consulta: **IP Whois**", value="", inline=False)
+        embed.add_field(name="Informações de retorno:", value="Informações 100% Atualizadas de IP.", inline=False)
+        embed.add_field(name="Status da API:", value="🟢 API ONLINE", inline=False)   
+        embed.add_field(name="Use o comando: `./ip` e o {IP} que deseja.", value='*Exemplo: `./ip` 1.1.1.1*', inline=False)
+        await ctx.reply(embed=embed)
         return
 
     data = requests.get(f"https://ipwhois.app/json/{ip}").json()
@@ -1623,14 +1633,26 @@ async def ip(ctx, ip=None):
 
         embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
 
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
         return
     except Exception:
         pass
 
 @client.command()
-async def covid(ctx, covid = None):
+async def covid(ctx, covid=None):
+
+    if not covid:
+
+        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO COVIDㅤㅤㅤ', icon_url='')
+        embed.add_field(name="Fonte da consulta: **Covid Brazil**", value="", inline=False)
+        embed.add_field(name="Informações de retorno:", value="Informações de casos de covid no brasil por estado.", inline=False)
+        embed.add_field(name="Status da API:", value="🟢 API ONLINE", inline=False)   
+        embed.add_field(name="Use o comando: `./covid` e o {ESTADO} que deseja.", value='*Exemplo*: `./covid SP`', inline=False)
+        embed.add_field(name="Observação:", value='*Utilize apenas a sigla do estado correspondente!*', inline=False)
+        embed.add_field(name="Estados Brasileiros com suas respectivas siglas:", value='Acre - `AC`\nAlagoas - `AL`\nAmazonas - `AM`\nBahia - `BA`\nCeará - `CE`\nDistrito Federal - `DF`\nEspírito Santo - `ES`\nGoiás - `GO`\nMaranhão - `MA`\nMato Grosso - `MT`\nMato Grosso do Sul - `MS`\nMinas Gerais - `MG`\nPará - `PA`\nParaíba - `PB`\nParaná - `PR`\nPernambuco - `PE`\nPiauí - `PI`\nRio de Janeiro - `RJ`\nRio Grande do Norte - `RN`\nRio Grande do Sul - `RS`\nRondônia - `RO`\nRoraima	- `RR`\nSanta Catarina - `SC`\nSão Paulo - `SP`\nSergipe - `SE`\nTocantins - `TO`\n', inline=False)
+        await ctx.reply(embed=embed)
+        return
 
     data = requests.get(f"https://covid19-brazil-api.vercel.app/api/report/v1/brazil/uf/{covid}").json()
 
@@ -1645,85 +1667,30 @@ async def covid(ctx, covid = None):
         embed.add_field(name="• SUSPEITOS", value=data.get ('suspects', 'Sem informação'), inline=False)
         embed.add_field(name="• DESCARTADOS", value=data.get('refuses', 'Sem informação'), inline=False)
         embed.add_field(name="• ÚLTIMA ATUALIZAÇÃO", value=data.get('datetime', 'Sem informação'), inline=False)
-
-        embed.add_field(name="ㅤ", value='👽ﾠ**By Whois Alien**', inline=False)
         embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
 
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
         
         return
     except Exception:
-        pass
-
         embed = discord.Embed(title='')
+        embed.set_author(name='ㅤㅤSEM INFORMAÇÕESㅤㅤ', icon_url='')
+        return await ctx.reply(embed=embed)
 
-    if (covid == None):
-        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO COVIDㅤㅤㅤ', icon_url='')
-        embed.add_field(name="Use o comando: `./covid` e o {ESTADO} que deseja.", value='*Exemplo*: `./covid SP`', inline=False)
-        embed.add_field(name="Observação:", value='*Utilize apenas a sigla do estado correspondente!*', inline=False)
-        embed.add_field(name="Estados Brasileiros com suas respectivas siglas:", value='Acre - `AC`\nAlagoas - `AL`\nAmazonas - `AM`\nBahia - `BA`\nCeará - `CE`\nDistrito Federal - `DF`\nEspírito Santo - `ES`\nGoiás - `GO`\nMaranhão - `MA`\nMato Grosso - `MT`\nMato Grosso do Sul - `MS`\nMinas Gerais - `MG`\nPará - `PA`\nParaíba - `PB`\nParaná - `PR`\nPernambuco - `PE`\nPiauí - `PI`\nRio de Janeiro - `RJ`\nRio Grande do Norte - `RN`\nRio Grande do Sul - `RS`\nRondônia - `RO`\nRoraima	- `RR`\nSanta Catarina - `SC`\nSão Paulo - `SP`\nSergipe - `SE`\nTocantins - `TO`\n', inline=False)
-        return await ctx.send(embed=embed)
-    else:
-       embed.set_author(name='ㅤㅤㅤㅤㅤㅤESTADO INVÁLIDOㅤㅤㅤ', icon_url='')
-       return await ctx.send(embed=embed)
-
-
-@client.command()
-async def cep(ctx, cep=None):
-
-    MAPS_API = os.getenv("GOOGLE_MAPS_API_KEY")
-
-    if not cep:
-        embed = discord.Embed(title='')
-        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO CEP', icon_url='')
-        embed.add_field(name="Use o comando: `/cep` e o {CEP} que deseja.", value='*Exemplo*: `/cep 70150904`', inline=False)
-        embed.add_field(name="Observação:", value='*Não utilize pontos, hifens e caracteres especiais*', inline=False)      
-        await ctx.send(embed=embed)
-        return
-
-    # Requisição para a API de CEP
-    data = requests.get(f"https://cep.awesomeapi.com.br/json/{cep}").json()
-
-    if 'erro' in data:
-        embed = discord.Embed(title='')
-        embed.set_author(name='CEP NÃO ENCONTRADO', icon_url='')
-        await ctx.send(embed=embed)
-        return
-
-    latitude = data.get('lat')
-    longitude = data.get('lng')
-
-    maps_link = f"https://www.google.com/maps?q={latitude},{longitude}"
-    mapa_url = f"https://maps.googleapis.com/maps/api/staticmap?center={latitude},{longitude}&zoom=15&size=600x300&markers=color:red%7C{latitude},{longitude}&key={MAPS_API}"
-
-    embed = discord.Embed(title='')
-
-    embed.set_author(name='ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤCONSULTA DE CEPㅤㅤㅤㅤㅤㅤㅤㅤ', icon_url='') #----->> TÍTULO DO CÓDIGO
-
-    embed.add_field(name="• CEP", value=data.get('cep', 'Sem Informação'), inline=False)
-    embed.add_field(name="• NOME DA RUA", value=data.get('address', 'Sem Informação'), inline=False)
-    embed.add_field(name="• BAIRRO", value=data.get('district', 'Sem Informação'), inline=False)
-    embed.add_field(name="• CIDADE", value=data.get('city', 'Sem Informação'), inline=False)
-    embed.add_field(name="• ESTADO", value=data.get('state', 'Sem Informação'), inline=False)
-    embed.add_field(name="• IBGE", value=data.get('city_ibge', 'Sem Informação'), inline=False)
-    embed.add_field(name="• DDD", value=data.get('ddd', 'Sem Informação'), inline=False)
-    embed.add_field(name="• LOCALIZAÇÃO", value=f"[{latitude},{longitude}]({maps_link})", inline=False)
-    embed.set_image(url=mapa_url)  # Adiciona a imagem do mapa
-
-    embed.set_footer(text=f'Requested By {ctx.author}\nWhois Alien © All Rights Reserved', icon_url='')
-
-    await ctx.send(embed=embed)
 
 @client.command()
 async def banco(ctx, banco=None):
 
-    if banco is None:
+    if not banco:
 
         embed = discord.Embed(title='')
         embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO BANCOㅤㅤㅤ', icon_url='')
+        embed.add_field(name="Fonte da consulta: **Brasil API**", value="", inline=False)
+        embed.add_field(name="Informações de retorno:", value="Informações referente ao banco ou IFNC.", inline=False)
+        embed.add_field(name="Status da API:", value="🟢 API ONLINE", inline=False)   
         embed.add_field(name="Use o comando: `./banco` e o {CÓDIGO DO BANCO}", value='*Exemplo*: `./banco 237`', inline=False)
         embed.add_field(name="Observação:", value='*Utilize apenas o código bancário correspondente!*', inline=False)
-        return await ctx.send(embed=embed)
+        return await ctx.reply(embed=embed)
 
     try:
         data = requests.get(f"https://brasilapi.com.br/api/banks/v1/{banco}").json()
@@ -1736,18 +1703,27 @@ async def banco(ctx, banco=None):
         embed.add_field(name="• NOME DO BANCO", value=data['name'], inline=False)
         embed.add_field(name="• CÓDIGO DO BANCO", value=data['code'], inline=False)
         embed.add_field(name="• INFORMAÇÕES ADICIONAIS", value=data['fullName'], inline=False)
-        embed.add_field(name="ㅤ", value='👽ﾠ**By Whois Alien**', inline=False)
 
         embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
     except Exception:
         embed = discord.Embed(title='')
         embed.set_author(name='ㅤㅤCÓDIGO BANCÁRIO NÃO ENCONTRADOㅤㅤ', icon_url='')
-        return await ctx.send(embed=embed)
+        return await ctx.reply(embed=embed)
 
 @client.command()
-async def bin(ctx, bin):
+async def bin(ctx, bin=None):
+
+    if not bin:
+
+        embed = discord.Embed(title='')
+        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO BINㅤㅤㅤ', icon_url='')
+        embed.add_field(name="Fonte da consulta: **BinList**", value="", inline=False)
+        embed.add_field(name="Informações de retorno:", value="Sobre a BIN do cartão.", inline=False)
+        embed.add_field(name="Status da API:", value="🟢 API ONLINE", inline=False)   
+        embed.add_field(name="Use o comando: `./bin` e o {BIN} que deseja checar", value='*Exemplo*: `./bin 522840`', inline=False)
+        return await ctx.reply(embed=embed)
 
     try:
         data = f"https://lookup.binlist.net/{bin}"
@@ -1761,7 +1737,7 @@ async def bin(ctx, bin):
 
             embed.set_author(name='ㅤㅤㅤㅤㅤㅤㅤㅤCONSULTA DE BINㅤㅤㅤㅤㅤㅤㅤㅤ', icon_url='')
 
-            embed.add_field(name="• BIN", value=data.get("{bin}"), inline=False)
+            embed.add_field(name="• BIN", value=data.get(f"{bin}"), inline=False)
             embed.add_field(name="• MODELO", value=data.get("type", "Desconhecido"), inline=False)
             embed.add_field(name="• BANDEIRA", value=data.get("scheme", "Desconhecido"), inline=False)
             embed.add_field(name="• NÍVEL", value=data.get("brand", "Desconhecido"), inline=False)
@@ -1772,32 +1748,30 @@ async def bin(ctx, bin):
             embed.add_field(name="• TELEFONE", value=data.get("bank", {}).get("phone", "Desconhecido"), inline=False)
             embed.add_field(name="• CIDADE", value=data.get("bank", {}).get("city", "Desconhecido"), inline=False)
 
-            embed.add_field(name="ㅤ", value='👽ﾠ**By Whois Alien**', inline=False)                 
             embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
 
-            await ctx.send(embed=embed)
- 
+            await ctx.reply(embed=embed)
         else:
             embed = discord.Embed(title='') 
             embed.set_author(name='ㅤㅤㅤBIN NÃO ENCONTRADAㅤㅤㅤ', icon_url='')
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed)
 
     except Exception as e: 
-
-        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO BINㅤㅤㅤ', icon_url='')
-        embed.add_field(name="Use o comando: `./bin` e a {BIN} que deseja.", value='*Exemplo*: `./bin 522840`', inline=False)
-        embed.add_field(name="Observação:", value='*Não utilize pontos, hifens e caracteres especiais*', inline=False)     
-
-        await ctx.send(embed=embed)
+        embed = discord.Embed(title='') 
+        embed.set_author(name=f'Erro na consulta {response.status_code}', icon_url='')
+        await ctx.reply(embed=embed)
 
 @client.command()
-async def site(ctx, ip=None):
+async def site(ctx, site=None):
 
-    if not ip:
+    if not site:
         embed = discord.Embed(title='')
-        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO IPㅤㅤㅤ', icon_url='')
-        embed.add_field(name="Use o comando: `./ip` e o {IP} que deseja.", value='*Exemplo: `./ip` 127.0.0.1*', inline=False)
-        await ctx.send(embed=embed)
+        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO SITE LOOKUPㅤㅤㅤ', icon_url='')
+        embed.add_field(name="Fonte da consulta: **IP Whois**", value="", inline=False)
+        embed.add_field(name="Informações de retorno:", value="Informações 100% Atualizadas dos Sites.", inline=False)
+        embed.add_field(name="Status da API:", value="🟢 API ONLINE", inline=False)   
+        embed.add_field(name="Use o comando: `./site` e o {SITE} que deseja.", value='*Exemplo: `./site` www.google.com*', inline=False)
+        await ctx.reply(embed=embed)
         return
 
     data = requests.get(f"https://ipwhois.app/json/{site}").json()
@@ -1846,7 +1820,7 @@ async def site(ctx, ip=None):
 
         embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
 
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
         return
     except Exception:
@@ -1854,16 +1828,19 @@ async def site(ctx, ip=None):
 
 
 @client.command()
-async def cotacao(ctx, cotacao = None):
+async def cotacao(ctx, cotacao=None):
 
-    if cotacao is None:
+    if not cotacao:
         
         embed = discord.Embed(title='')
 
         embed.set_author(name='ㅤㅤㅤㅤ   👽 COMANDO COTAÇÃOㅤㅤㅤ', icon_url='')
-        embed.add_field(name="Use o comando: `/cotacao` e o {PAR DE MOEDA} que deseja", value='*Exemplo*: `/cotacao BRL-USD`', inline=False)
+        embed.add_field(name="Fonte da consulta: **AwesomeAPI**", value="", inline=False)
+        embed.add_field(name="Informações de retorno:", value="Informações sobre a cotação entre as moedas.", inline=False)
+        embed.add_field(name="Status da API:", value="🟢 API ONLINE", inline=False)   
+        embed.add_field(name="Use o comando: `./cotacao` e o {PAR DE MOEDA} que deseja", value='*Exemplo*: `./cotacao BRL-USD`', inline=False)
         embed.add_field(name="Observação:", value='*O par precisa ser separado com hifen*', inline=False)   
-        return await ctx.send(embed=embed)
+        return await ctx.reply(embed=embed)
 
     data = requests.get(f"https://economia.awesomeapi.com.br/last/{cotacao}").json()
     coin_name = cotacao.replace("-", "")
@@ -1886,7 +1863,6 @@ async def cotacao(ctx, cotacao = None):
         embed.add_field(name="• ATUALIZAÇÃO", value=data[coin_name]["create_date"], inline=False)
         embed.add_field(name="Observação", value=f"Pode haver alguma pequena diferença na cotação das moedas!!! Grande parte dos sites que fornecem essa informação informa margem de erros, então vale sempre conferir a informação mais precisa possível no TradingView, O site está disponível abaixo:\nhttps://br.tradingview.com/", inline=False)
 
-        embed.add_field(name="ㅤ", value='👽ﾠ**By Whois Alien**', inline=False)             
         embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
     else:
         embed = discord.Embed(title='')
@@ -1894,17 +1870,20 @@ async def cotacao(ctx, cotacao = None):
 
     embed.set_author(name='ㅤㅤCOTAÇÃO DE MOEDAS INVÁLIDAㅤㅤㅤ', icon_url='')
 
-    await ctx.send(embed=embed)
+    await ctx.reply(embed=embed)
 
 @client.command() 
-async def ddd(ctx, ddd = None):
+async def ddd(ctx, ddd=None):
 
-    if ddd is None:
+    if not ddd:
         
         embed = discord.Embed(title='') 
-        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO DDDㅤㅤㅤ', icon_url='')
+        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO PROCURA DDDㅤㅤㅤ', icon_url='')
+        embed.add_field(name="Fonte da consulta: **BrasilAPI**", value="", inline=False)
+        embed.add_field(name="Informações de retorno:", value="Informações 100% Atualizadas dos Sites.", inline=False)
+        embed.add_field(name="Status da API:", value="🟢 API ONLINE", inline=False)   
         embed.add_field(name="Use o comando: `./ddd` e o {DDD} que deseja", value='*Exemplo*: `./ddd 11`', inline=False)
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
         return
 
     data = requests.get(f"https://brasilapi.com.br/api/ddd/v1/{ddd}").json() 
@@ -1913,7 +1892,7 @@ async def ddd(ctx, ddd = None):
         if 'type' in data and data['type'] == 'ddd_error':
             embed = discord.Embed(title='')
             embed.set_author(name='ㅤㅤDDD INVÁLIDO, CIDADE NÃO ENCONTRADAㅤㅤ', icon_url='')
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed)
             return
 
         else: 
@@ -1926,13 +1905,25 @@ async def ddd(ctx, ddd = None):
 
             embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
 
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed)
 
     except Exception:
         pass   
 
 @client.command()
-async def whois(ctx, domain: str):
+async def whois(ctx, domain: str, whois=None):
+
+
+    if not whois:
+        embed = discord.Embed(title='') 
+        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO WHOISㅤㅤㅤ', icon_url='')
+        embed.add_field(name="Fonte da consulta: **IP2 Whois**", value="", inline=False)
+        embed.add_field(name="Informações de retorno:", value="ISP, ASN, DOMÍNIO E OUTROS.", inline=False)
+        embed.add_field(name="Status da API:", value="🟢 API ONLINE", inline=False)   
+        embed.add_field(name="Use o comando: `./whois` e o {SITE} que deseja", value='*Exemplo*: `./whois google.com`', inline=False)
+        await ctx.reply(embed=embed)
+        return
+
 
     api_key_whois = os.getenv("IP2WHOIS_KEY")
     api_url = f"https://api.ip2whois.com/v2?key={api_key_whois}&domain={domain}"
@@ -1943,7 +1934,7 @@ async def whois(ctx, domain: str):
                 if response.status != 200:
                     embed = discord.Embed(title="")
                     embed.set_author(name=f'ERRO AO OBTER OS DADOS WHOIS PARA! ERRO: {response.status}', icon_url='')
-                    await ctx.send(embed=embed)
+                    await ctx.reply(embed=embed)
                     return
                 
                 data = await response.json()
@@ -1994,17 +1985,28 @@ async def whois(ctx, domain: str):
                 inline=False
             )
 
-        embed.add_field(name="ㅤ", value='👽ﾠ**By Whois Alien**', inline=False)             
         embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
 
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
     except Exception as e:
-        await ctx.send(f"❌ Ocorreu um erro ao consultar o domínio **{domain}**:\n{str(e)}")
+        embed = discord.Embed(title="")
+        embed.set_author(name=f'ERRO AO CONSULTAR O ENDEREÇO WHOIS', icon_url='')
 
+        await ctx.reply(embed=embed)
 
 @client.command()
-async def maclookup(ctx, maclookup):
+async def maclookup(ctx, maclookup=None):
+
+    if not maclookup:
+        embed = discord.Embed(title='') 
+        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO MACLOOKUPㅤㅤㅤ', icon_url='')
+        embed.add_field(name="Fonte da consulta: **WhoisXML**", value="", inline=False)
+        embed.add_field(name="Informações de retorno:", value="Fabricante, Data de criação, endereço do fabricante, país etc.", inline=False)
+        embed.add_field(name="Status da API:", value="🟢 API ONLINE", inline=False)   
+        embed.add_field(name="Use o comando: `./maclookup` e o {MAC} que deseja", value='*Exemplo*: `./maclookup FC:FB:FB:01:FA:21`', inline=False)
+        await ctx.reply(embed=embed)
+        return
 
     mac_key = os.getenv("WHOISXML_TOKEN")
     url = f"https://mac-address.whoisxmlapi.com/api/v1?apiKey={mac_key}&macAddress={maclookup}&outputFormat=json"
@@ -2039,16 +2041,15 @@ async def maclookup(ctx, maclookup):
             embed.add_field(name="• ADMINISTRADOR", value=data.get("macAddressDetails", {}).get("administrationType", "SEM INFORMAÇÃO"), inline=False)
             embed.add_field(name="• NOTAS WIRESHARK", value=data.get("macAddressDetails", {}).get("wiresharkNotes", "SEM INFORMAÇÃO"), inline=False)
 
-            embed.add_field(name="ㅤ", value='👽ﾠ**By Whois Alien**', inline=False)             
             embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
             
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed)
 
         else:
             embed = discord.Embed(title="")
             embed.set_author(name=f'ERRO AO CONSULTAR O ENDEREÇO MAC {maclookup}', icon_url='')
 
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed)
 
     except Exception as e: 
         
@@ -2057,7 +2058,7 @@ async def maclookup(ctx, maclookup):
         embed.set_author(name="ㅤㅤCOMANDO DE CONSULTA DE ENDEREÇO MACㅤㅤ") 
         embed.add_field(name="Use o comando: `./maclookup` e a endereço {MAC} que deseja.", value='*Exemplo*: `./maclookup 00:00:5E:00:53:AF`', inline=False)
         embed.add_field(name="Observação:", value='*Pode ser utilizado somente letras maiúscilas e minúsculas*', inline=False)  
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
 # @client.command()
 # async def reverseip(ctx, reverseip):
@@ -2086,7 +2087,7 @@ async def maclookup(ctx, maclookup):
 #                 embed.set_author(name='ㅤㅤㅤㅤREVERSE IP LOOKUP EFETUADO COM SUCESSOㅤㅤㅤ', icon_url='')
 #                 embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
 
-#             await ctx.send(embed=embed)
+#             await ctx.reply(embed=embed)
 
 #         else:
 
@@ -2094,14 +2095,14 @@ async def maclookup(ctx, maclookup):
 #             embed.add_field(name="", value=f"Ocorreu um erro durante consultar o IP Reverso. Status code: {response.status_code}", inline=False)
 #             embed.set_author(name='Erro na Resposta da API - ReverseIP Lookup', icon_url='')
 
-#             await ctx.send(embed=embed)
+#             await ctx.reply(embed=embed)
 
 #     except Exception as e:
 #         embed = discord.Embed(title="")
 #         embed.add_field(name="", value=f"Ocorreu um erro ao consultar o IP Reverso: {str(e)}", inline=False)
 #         embed.set_author(name='Erro na Resposta da API - ReverseIP Lookup', icon_url='')
 
-#         await ctx.send(embed=embed)
+#         await ctx.reply(embed=embed)
 
 # @client.command()
 # async def traceroute(ctx, traceroute):
@@ -2130,7 +2131,7 @@ async def maclookup(ctx, maclookup):
 #                 embed.set_author(name='ㅤㅤㅤㅤㅤTRACEROUTE EFETUADO COM SUCESSOㅤㅤㅤㅤ', icon_url='')
 #                 embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
 
-#             await ctx.send(embed=embed)
+#             await ctx.reply(embed=embed)
 
 #         else:
 
@@ -2138,18 +2139,30 @@ async def maclookup(ctx, maclookup):
 #             embed.add_field(name="", value=f"Ocorreu um erro durante traçar a rota do servidor. Status code: {response.status_code}", inline=False)
 #             embed.set_author(name='Erro na Resposta da API - Traceroute', icon_url='')
 
-#             await ctx.send(embed=embed)
+#             await ctx.reply(embed=embed)
 
 #     except Exception as e:
 #         embed = discord.Embed(title="")
 #         embed.add_field(name="", value=f"Ocorreu um erro ao traçar a rota do servidor: {str(e)}", inline=False)
 #         embed.set_author(name='Erro na Resposta da API - Traceroute', icon_url='')
 
-#         await ctx.send(embed=embed)
+#         await ctx.reply(embed=embed)
 
 @client.command()
-async def portscan(ctx, portscan):
+async def portscan(ctx, portscan=None):
     
+    if not portscan:
+
+        embed = discord.Embed(title='') 
+        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO PORTSCANㅤㅤㅤ', icon_url='')
+        embed.add_field(name="Fonte da consulta: **NMAP**", value="", inline=False)
+        embed.add_field(name="Informações de retorno:", value="Portas abertas e serviços", inline=False)
+        embed.add_field(name="Status da API:", value="🟢 API ONLINE", inline=False)   
+        embed.add_field(name="Use o comando: `./portscan` e o {IP} que deseja", value='*Exemplo*: `./portscan 1.1.1.1`', inline=False)
+        await ctx.reply(embed=embed)
+        return
+
+
     view_dns_key = os.getenv("VIEWDNS_TOKEN")
     url = f"https://api.viewdns.info/portscan/?host={portscan}&apikey={view_dns_key}&output=json"
 
@@ -2172,7 +2185,7 @@ async def portscan(ctx, portscan):
                 embed.set_author(name='ㅤㅤㅤㅤㅤㅤSCAN DE PORTAS EFETUADO COM SUCESSOㅤㅤㅤㅤ', icon_url='')
                 embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
 
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed)
 
         else:
 
@@ -2180,13 +2193,13 @@ async def portscan(ctx, portscan):
             embed.add_field(name="", value=f"ERRO: {response.status_code}", inline=False)
             embed.set_author(name='ERRO NA RESPOSTA DA API - PORTSCAN', icon_url='')
 
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed)
 
     except Exception as e:
         embed = discord.Embed(title="")
         embed.add_field(name="", value=f"ERRO: {str(e)}", inline=False)
         embed.set_author(name='ERRO NA RESPOSTA DA API - PORTSCAN', icon_url='')
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
 
 # @client.command() 
@@ -2210,10 +2223,9 @@ async def portscan(ctx, portscan):
 #         embed.add_field(name="• OPERADORA/PROVEDOR", value=data['carrier'], inline=False)
 #         embed.add_field(name="• LINHA DE DISPOSITÍVO", value=data['line_type'], inline=False)
 
-#         embed.add_field(name="ㅤ", value='👽ﾠ**By Whois Alien**', inline=False)                
 #         embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
 
-#         await ctx.send(embed=embed)
+#         await ctx.reply(embed=embed)
 
 #         return
 #     except Exception:
@@ -2225,15 +2237,26 @@ async def portscan(ctx, portscan):
 #         embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO OPERADORAㅤㅤㅤ', icon_url='')
 #         embed.add_field(name="Use o comando: `/operadora` e a {NÚMERO}", value='*Exemplo*: `/operadora +5511987654321`', inline=False)
 #         embed.add_field(name="Observação:", value='*utilize o padrão universal.*', inline=False)        
-#         return await ctx.send(embed=embed)
+#         return await ctx.reply(embed=embed)
 #     else: 
 #        embed.set_author(name='ㅤㅤㅤOPERADORA NÃO ENCONTRADAㅤㅤㅤ', icon_url='')
-#        return await ctx.send(embed=embed)
+#        return await ctx.reply(embed=embed)
 
 
 
 @client.command()
 async def emailinfo(ctx, emailinfo=None):
+
+    if not emailinfo:
+        embed = discord.Embed(title='') 
+        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO EMAIL-INFOㅤㅤㅤ', icon_url='')
+        embed.add_field(name="Fonte da consulta: **APILayer**", value="", inline=False)
+        embed.add_field(name="Informações de retorno:", value="Informações, domínios, validade e outros.", inline=False)
+        embed.add_field(name="Status da API:", value="🟢 API ONLINE", inline=False)   
+        embed.add_field(name="Use o comando: `./emailinfo` e o {E-MAIL} que deseja", value='*Exemplo*: `./emailinfo joao@gmail.com`', inline=False)
+
+        await ctx.reply(embed=embed)
+        return
 
     email_token = os.getenv("APILAYER_TOKEN")
     data = requests.get(
@@ -2242,13 +2265,7 @@ async def emailinfo(ctx, emailinfo=None):
     
     try:
         embed = discord.Embed(title='')
-
-        embed.set_author(
-            name='ㅤㅤㅤㅤㅤㅤㅤㅤCHECKER DE E-MAILㅤㅤㅤㅤㅤㅤㅤㅤ', 
-            icon_url=''
-        )  # ----->> TÍTULO DO CÓDIGO
-
-        # Preenche o embed com os dados, convertendo os valores booleanos
+        embed.set_author(name='ㅤㅤㅤㅤㅤㅤㅤㅤCHECKER DE E-MAILㅤㅤㅤㅤㅤㅤㅤㅤ', icon_url='')  
         embed.add_field(name="• E-MAIL", value=data['email'], inline=False)
         embed.add_field(name="• USUÁRIO", value=data['user'], inline=False)
         embed.add_field(name="• DOMÍNIO", value=data['domain'], inline=False)
@@ -2260,25 +2277,15 @@ async def emailinfo(ctx, emailinfo=None):
         embed.add_field(name="• E-MAIL GRATUITO", value=convert_info(data['free']), inline=False)
         embed.add_field(name="• PONTUAÇÃO DE E-MAIL", value=data['score'], inline=False)
 
-        embed.add_field(name="ㅤ", value='👽ﾠ**By Whois Alien**', inline=False)             
         embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
 
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
         return
     except Exception:
-        pass
-
         embed = discord.Embed(title='')
-
-    if (emailinfo == None): #--------->> SE ENCONTRAR BRANCO OU NULO, RETORNA O COMANDO DO BOT DE "TUTORIAL"
-        embed.set_author(name='ㅤㅤㅤㅤ👽 COMANDO EMAILㅤㅤㅤ', icon_url='')
-        embed.add_field(name="Use o comando: `/emailinfo` e a {E-MAIL}", value='*Exemplo*: `/emailinfo google@gmail.com`', inline=False)
-        return await ctx.send(embed=embed)
-    else: #--------->> SE NÃO ENCONTRAR, RETORNA NÃO ENCONTRADO
-       embed.set_author(name='E-MAIL NÃO ENCONTRADO', icon_url='')
-       return await ctx.send(embed=embed)
-   
+        embed.set_author(name='E-MAIL NÃO ENCONTRADO', icon_url='')
+        return
 
 #<---------------------------------------------------------------------------
 # Abas interativas - informações e geradores
@@ -2311,7 +2318,7 @@ async def gerador(ctx):
    
     embed.set_footer(text='Whois Alien © All Rights Reserved', icon_url='')
 
-    await ctx.send(embed=embed)
+    await ctx.reply(embed=embed)
 
 def remover_titulos(nome):
 
@@ -2348,13 +2355,15 @@ async def gerar_pessoa(ctx):
         embed.add_field(name="CNPJ do Trabalho", value=fake.cnpj(), inline=True)
         embed.add_field(name="Endereço IP", value=fake.ipv4(), inline=True)
         embed.add_field(name="MAC do celular", value=fake.mac_address(), inline=True)
+
         embed.set_footer(text=f'Requested By {ctx.author}\nWhois Alien © All Rights Reserved', icon_url='')
-        await ctx.send(embed=embed)
+        
+        await ctx.reply(embed=embed)
 
     except Exception as e:
         embed = discord.Embed(title='')
         embed.set_author(name='NÃO FOI POSSÍVEL GERAR UMA PESSOA NO MOMENTO', icon_url='')
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
         
 @client.command()
 async def gerar_usr(ctx):
@@ -2364,17 +2373,18 @@ async def gerar_usr(ctx):
 
         embed.set_author(name='USERNAME GERADO COM SUCESSO', icon_url='')
         embed.add_field(name="", value=fake.user_name(), inline=False)
+
         embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
-        await ctx.send(embed=embed)
+        
+        await ctx.reply(embed=embed)
 
         return
     except Exception:
         pass
 
         embed = discord.Embed(title='')
-
         embed.set_author(name='ㅤㅤㅤNÃO FOI POSSÍVEL GERAR UM USER NO MOMENTOㅤㅤㅤ', icon_url='')
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
 @client.command()
 async def gerar_email(ctx):
@@ -2384,13 +2394,13 @@ async def gerar_email(ctx):
         embed.set_author(name='EMAIL GERADO COM SUCESSO', icon_url='')
         embed.add_field(name="", value=fake.ascii_free_email(), inline=False)
         embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
         return
     except Exception:
        
         embed.set_author(name='ㅤㅤㅤNÃO FOI POSSÍVEL GERAR UM E-MAIL NO MOMENTOㅤㅤㅤ', icon_url='')
-        return await ctx.send(embed=embed)
+        return await ctx.reply(embed=embed)
 
 
 @client.command()
@@ -2401,13 +2411,13 @@ async def gerar_tel(ctx):
         embed.set_author(name='TELEFONE GERADO COM SUCESSO', icon_url='')
         embed.add_field(name="", value=fake.cellphone_number(), inline=False)
         embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
         return
     except Exception:
        
         embed.set_author(name='ㅤㅤㅤNÃO FOI POSSÍVEL GERAR UM TELEFONE NO MOMENTOㅤㅤㅤ', icon_url='')
-        return await ctx.send(embed=embed)
+        return await ctx.reply(embed=embed)
 
 @client.command()
 async def gerar_cpf(ctx):
@@ -2417,14 +2427,14 @@ async def gerar_cpf(ctx):
         embed.set_author(name='CPF GERADO COM SUCESSO', icon_url='')
         embed.add_field(name="", value=fake.cpf(), inline=False)
         embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
         return
     except Exception:
         pass
 
         embed.set_author(name='ㅤㅤㅤNÃO FOI POSSÍVEL GERAR UM CPF NO MOMENTOㅤㅤㅤ', icon_url='')
-        return await ctx.send(embed=embed)
+        return await ctx.reply(embed=embed)
 
 @client.command()
 async def gerar_cartao(ctx):
@@ -2440,13 +2450,13 @@ async def gerar_cartao(ctx):
         embed.add_field(name="• CPF", value=fake.cpf(), inline=False)
         embed.add_field(name="• Data de Nascimento", value=fake.date_of_birth(minimum_age=18, maximum_age=85), inline=False)
         embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
         return
     except Exception:
 
         embed.set_author(name='ㅤㅤㅤNÃO FOI POSSÍVEL GERAR UM CARTÃOㅤㅤㅤ', icon_url='')
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
 @client.command()
 async def gerar_rg(ctx):
@@ -2456,13 +2466,13 @@ async def gerar_rg(ctx):
         embed.set_author(name='RG GERADO COM SUCESSO', icon_url='')
         embed.add_field(name="", value=fake.rg(), inline=False)
         embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
         return
     except Exception:
        
         embed.set_author(name='ㅤㅤㅤNÃO FOI POSSÍVEL GERAR UM RG NO MOMENTOㅤㅤㅤ', icon_url='')
-        return await ctx.send(embed=embed)
+        return await ctx.reply(embed=embed)
 
 
 @client.command()
@@ -2473,13 +2483,13 @@ async def gerar_agent(ctx):
         embed.set_author(name='USER AGENT GERADO COM SUCESSO', icon_url='')
         embed.add_field(name="", value=fake.user_agent(), inline=False)
         embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
         return
     except Exception:
        
         embed.set_author(name='ㅤㅤㅤNÃO FOI POSSÍVEL GERAR UM USER AGENT NO MOMENTOㅤㅤㅤ', icon_url='')
-        return await ctx.send(embed=embed)
+        return await ctx.reply(embed=embed)
 
 
 @client.command()
@@ -2490,13 +2500,13 @@ async def gerar_passaporte(ctx):
         embed.set_author(name='PASSAPORTE GERADO COM SUCESSO', icon_url='')
         embed.add_field(name="", value=fake.passport_full(), inline=False)
         embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
         return
     except Exception:
        
         embed.set_author(name='ㅤㅤㅤNÃO FOI POSSÍVEL GERAR UM PASSAPORTE NO MOMENTOㅤㅤㅤ', icon_url='')
-        return await ctx.send(embed=embed)
+        return await ctx.reply(embed=embed)
 
 
 @client.command()
@@ -2507,13 +2517,13 @@ async def gerar_texto(ctx):
         embed.set_author(name='TEXTO GERADO COM SUCESSO', icon_url='')
         embed.add_field(name="", value=fake.text(max_nb_chars=200, ext_word_list=None), inline=False)
         embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
         return
     except Exception:
        
         embed.set_author(name='ㅤㅤㅤNÃO FOI POSSÍVEL GERAR UM TEXTO NO MOMENTOㅤㅤㅤ', icon_url='')
-        return await ctx.send(embed=embed)
+        return await ctx.reply(embed=embed)
 
 
 
@@ -2525,13 +2535,13 @@ async def gerar_ip(ctx):
         embed.set_author(name='IP GERADO COM SUCESSO', icon_url='')
         embed.add_field(name="", value=fake.ipv4(), inline=False)
         embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
         return
     except Exception:
        
         embed.set_author(name='ㅤㅤㅤNÃO FOI POSSÍVEL GERAR UM IP NO MOMENTOㅤㅤㅤ', icon_url='')
-        return await ctx.send(embed=embed)
+        return await ctx.reply(embed=embed)
 
 
 @client.command()
@@ -2542,13 +2552,13 @@ async def gerar_mac(ctx):
         embed.set_author(name='MAC GERADO COM SUCESSO', icon_url='')
         embed.add_field(name="", value=fake.mac_address(), inline=False)
         embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
         return
     except Exception:
        
         embed.set_author(name='ㅤㅤㅤNÃO FOI POSSÍVEL GERAR UM MAC NO MOMENTOㅤㅤㅤ', icon_url='')
-        return await ctx.send(embed=embed)
+        return await ctx.reply(embed=embed)
 
 @client.command()
 async def gerar_url(ctx):
@@ -2558,13 +2568,13 @@ async def gerar_url(ctx):
         embed.set_author(name='URL GERADA COM SUCESSO', icon_url='')
         embed.add_field(name="", value=fake.url(), inline=False)
         embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
         return
     except Exception:
        
         embed.set_author(name='ㅤㅤㅤNÃO FOI POSSÍVEL GERAR UMA URL NO MOMENTOㅤㅤㅤ', icon_url='')
-        return await ctx.send(embed=embed)
+        return await ctx.reply(embed=embed)
 
 @client.command()
 async def gerar_coordenadas(ctx):
@@ -2574,13 +2584,13 @@ async def gerar_coordenadas(ctx):
         embed.set_author(name='COORDENADA GERADA COM SUCESSO', icon_url='')
         embed.add_field(name="", value=fake.latitude() + ',' + fake.longitude(), inline=False)
         embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
         return
     except Exception:
        
         embed.set_author(name='ㅤㅤㅤNÃO FOI POSSÍVEL GERAR UMA COORDENADA NO MOMENTOㅤㅤㅤ', icon_url='')
-        return await ctx.send(embed=embed)
+        return await ctx.reply(embed=embed)
 
 @client.command()
 async def gerar_data(ctx):
@@ -2590,13 +2600,13 @@ async def gerar_data(ctx):
         embed.set_author(name='DATA GERADA COM SUCESSO', icon_url='')
         embed.add_field(name="", value=fake.date(), inline=False)
         embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
         return
     except Exception:
        
         embed.set_author(name='ㅤㅤㅤNÃO FOI POSSÍVEL GERAR UMA DATA NO MOMENTOㅤㅤㅤ', icon_url='')
-        return await ctx.send(embed=embed)
+        return await ctx.reply(embed=embed)
 
 @client.command()
 async def gerar_cnpj(ctx):
@@ -2607,13 +2617,13 @@ async def gerar_cnpj(ctx):
         embed.set_author(name='CNPJ GERADO COM SUCESSO', icon_url='')
         embed.add_field(name="", value=fake.cnpj(), inline=False)
         embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
         return
     except Exception:
        
         embed.set_author(name='ㅤㅤㅤNÃO FOI POSSÍVEL GERAR UM CNPJ NO MOMENTOㅤㅤㅤ', icon_url='')
-        return await ctx.send(embed=embed)
+        return await ctx.reply(embed=embed)
 
 @client.command()
 async def gerar_cor(ctx):
@@ -2628,13 +2638,13 @@ async def gerar_cor(ctx):
         embed.set_author(name='COR GERADA COM SUCESSO', icon_url='')
         embed.add_field(name="", value=cor, inline=False)
         embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
         return
     except Exception:
        
         embed.set_author(name='ㅤㅤㅤNÃO FOI POSSÍVEL GERAR UM CNPJ NO MOMENTOㅤㅤㅤ', icon_url='')
-        return await ctx.send(embed=embed)
+        return await ctx.reply(embed=embed)
 
 @client.command()
 async def gerar_placa(ctx):
@@ -2644,13 +2654,13 @@ async def gerar_placa(ctx):
         embed.set_author(name='PLACA GERADA COM SUCESSO', icon_url='')
         embed.add_field(name="", value=fake.license_plate(), inline=False)
         embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
         return
     except Exception:
        
         embed.set_author(name='ㅤㅤㅤNÃO FOI POSSÍVEL GERAR UMA PLACA NO MOMENTOㅤㅤㅤ', icon_url='')
-        return await ctx.send(embed=embed)
+        return await ctx.reply(embed=embed)
 
 @client.command()
 async def gerar_endereco(ctx):
@@ -2660,13 +2670,13 @@ async def gerar_endereco(ctx):
         embed.set_author(name='ENDEREÇO GERADA COM SUCESSO', icon_url='')
         embed.add_field(name="", value=fake.address(), inline=False)
         embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
         return
     except Exception:
        
         embed.set_author(name='ㅤㅤㅤNÃO FOI POSSÍVEL GERAR UM ENDEREÇO NO MOMENTOㅤㅤㅤ', icon_url='')
-        return await ctx.send(embed=embed)
+        return await ctx.reply(embed=embed)
 
 @client.command()
 async def gerar_senha(ctx, length=36):
@@ -2677,7 +2687,7 @@ async def gerar_senha(ctx, length=36):
     
         embed = discord.Embed(title="Senha gerada com Sucesso!")
         embed.add_field(name="", value='Sua senha foi enviada em seu privado!', inline=False)             
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
         embed = discord.Embed(title="")
 
         embed.set_author(name='SENHA GERADA COM SUCESSO', icon_url='')
@@ -2690,7 +2700,7 @@ async def gerar_senha(ctx, length=36):
     else:
         embed = discord.Embed(title="")
         embed.set_author(name='O comprimento da senha deve estar entre 10 e 64 caracteres.', icon_url='')
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
 
 
@@ -2707,7 +2717,7 @@ async def genpassword(ctx, length=36):
     
         embed = discord.Embed(title="Senha gerada com Sucesso!")
         embed.add_field(name="", value='Sua senha foi enviada em seu privado!', inline=False)             
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
         embed = discord.Embed(title="")
 
         embed.set_author(name='SENHA GERADA COM SUCESSO', icon_url='')
@@ -2720,7 +2730,7 @@ async def genpassword(ctx, length=36):
     else:
         embed = discord.Embed(title="")
         embed.set_author(name='O comprimento da senha deve estar entre 10 e 64 caracteres.', icon_url='')
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
 @client.command()
 async def genkey(ctx):
@@ -2728,15 +2738,14 @@ async def genkey(ctx):
     
     embed = discord.Embed(title="Chave gerada com Sucesso!")
     embed.add_field(name="", value='Sua chave foi enviada em seu privado!', inline=False)             
-    await ctx.send(embed=embed)
+    await ctx.reply(embed=embed)
     
     key = f"{secrets.token_hex(4)}-{secrets.token_hex(2)}-{secrets.token_hex(2)}-{secrets.token_hex(2)}-{secrets.token_hex(6)}"
     
     embed = discord.Embed(title="")
     embed.set_author(name=f'', icon_url='')
     embed.add_field(name="", value=key, inline=False)
-    embed.set_footer(text=f'Generated By {ctx.author} in {timestamp}', icon_url='')
-    
+    embed.set_footer(text=f'Generated By {ctx.author} in {timestamp}', icon_url='') 
 
     await ctx.author.send(embed=embed)
 
@@ -2749,7 +2758,7 @@ async def pwned(ctx, email_pwned=None):
 
         embed.set_author(name='ㅤㅤㅤㅤ   👽 COMANDO VERIFICAÇÃO DE VAZAMENTOSㅤㅤㅤ', icon_url='')
         embed.add_field(name="Use o comando: `./pwned` e o e-mail ou usuário que deseja verificar.", value='*Exemplo*: `./pwned joao@gmail.com`', inline=False)
-        return await ctx.send(embed=embed)
+        return await ctx.reply(embed=embed)
 
     try:
         api = LeakCheckAPI_Public()
@@ -2769,23 +2778,13 @@ async def pwned(ctx, email_pwned=None):
 
         embed.add_field(name="Locais de vazamento", value=leak_info, inline=False)
         embed.set_footer(text='Requested By {}\nWhois Alien © All Rights Reserved'.format(ctx.author), icon_url='')        
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
     except ValueError as e:
         if "Not found" in str(e):  # Trata o erro corretamente
             await ctx.send(f"O e-mail `{email_pwned}` não foi encontrado em nenhum vazamento.")
         else:
             await ctx.send(f"Ocorreu um erro ao processar a solicitação: {e}")
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -2803,7 +2802,7 @@ async def gen_md5(ctx, *, text: str = ""):
     embed.add_field(name="Hash MD5", value=md5_hash, inline=False)
     embed.set_footer(text=f'Requested By {ctx.author}\nWhois Alien © All Rights Reserved')
     
-    await ctx.send(embed=embed)
+    await ctx.reply(embed=embed)
 
 @client.command()
 async def gen_sha1(ctx, *, text: str = ""):
@@ -2816,7 +2815,7 @@ async def gen_sha1(ctx, *, text: str = ""):
     embed.add_field(name="Hash SHA1", value=sha1_hash, inline=False)
     embed.set_footer(text=f'Requested By {ctx.author}\nWhois Alien © All Rights Reserved')
     
-    await ctx.send(embed=embed)
+    await ctx.reply(embed=embed)
 
 @client.command()
 async def gen_sha256(ctx, *, text: str = ""):
@@ -2829,7 +2828,7 @@ async def gen_sha256(ctx, *, text: str = ""):
     embed.add_field(name="Hash SHA256", value=sha256_hash, inline=False)
     embed.set_footer(text=f'Requested By {ctx.author}\nWhois Alien © All Rights Reserved')
     
-    await ctx.send(embed=embed)
+    await ctx.reply(embed=embed)
 
 @client.command()
 async def gen_sha512(ctx, *, text: str = ""):
@@ -2842,7 +2841,7 @@ async def gen_sha512(ctx, *, text: str = ""):
     embed.add_field(name="Hash SHA512", value=sha512_hash, inline=False)
     embed.set_footer(text=f'Requested By {ctx.author}\nWhois Alien © All Rights Reserved')
     
-    await ctx.send(embed=embed)
+    await ctx.reply(embed=embed)
 
 @client.command()
 async def gen_blake2b(ctx, *, text: str = ""):
@@ -2855,7 +2854,7 @@ async def gen_blake2b(ctx, *, text: str = ""):
     embed.add_field(name="Hash BLAKE2B", value=blake2b_hash, inline=False)
     embed.set_footer(text=f'Requested By {ctx.author}\nWhois Alien © All Rights Reserved')
     
-    await ctx.send(embed=embed)
+    await ctx.reply(embed=embed)
 
 @client.command()
 async def gen_blake2s(ctx, *, text: str = ""):
@@ -2868,7 +2867,7 @@ async def gen_blake2s(ctx, *, text: str = ""):
     embed.add_field(name="Hash BLAKE2S", value=blake2s_hash, inline=False)
     embed.set_footer(text=f'Requested By {ctx.author}\nWhois Alien © All Rights Reserved')
     
-    await ctx.send(embed=embed)
+    await ctx.reply(embed=embed)
 
 @client.command()
 async def gen_sha224(ctx, *, text: str = ""):
@@ -2881,7 +2880,7 @@ async def gen_sha224(ctx, *, text: str = ""):
     embed.add_field(name="Hash SHA224", value=sha224_hash, inline=False)
     embed.set_footer(text=f'Requested By {ctx.author}\nWhois Alien © All Rights Reserved')
     
-    await ctx.send(embed=embed)
+    await ctx.reply(embed=embed)
 
 @client.command()
 async def gen_sha384(ctx, *, text: str = ""):
@@ -2894,7 +2893,7 @@ async def gen_sha384(ctx, *, text: str = ""):
     embed.add_field(name="Hash SHA384", value=sha384_hash, inline=False)
     embed.set_footer(text=f'Requested By {ctx.author}\nWhois Alien © All Rights Reserved')
     
-    await ctx.send(embed=embed)
+    await ctx.reply(embed=embed)
 
 @client.command()
 async def gen_shake128(ctx, *, text: str = ""):
@@ -2907,7 +2906,7 @@ async def gen_shake128(ctx, *, text: str = ""):
     embed.add_field(name="Hash SHAKE128", value=shake128_hash, inline=False)
     embed.set_footer(text=f'Requested By {ctx.author}\nWhois Alien © All Rights Reserved')
     
-    await ctx.send(embed=embed)
+    await ctx.reply(embed=embed)
 
 @client.command()
 async def gen_shake256(ctx, *, text: str = ""):
@@ -2920,7 +2919,7 @@ async def gen_shake256(ctx, *, text: str = ""):
     embed.add_field(name="Hash SHAKE256", value=shake256_hash, inline=False)
     embed.set_footer(text=f'Requested By {ctx.author}\nWhois Alien © All Rights Reserved')
     
-    await ctx.send(embed=embed)
+    await ctx.reply(embed=embed)
 
 @client.command()
 async def gen_scrypt(ctx, *, text: str = ""):
@@ -2933,65 +2932,8 @@ async def gen_scrypt(ctx, *, text: str = ""):
     embed.add_field(name="Hash SCRYPT", value=scrypt_hash, inline=False)
     embed.set_footer(text=f'Requested By {ctx.author}\nWhois Alien © All Rights Reserved')
     
-    await ctx.send(embed=embed)
+    await ctx.reply(embed=embed)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@client.command()
-async def repositorio(ctx):
-    await ctx.send("https://github.com/christopherrissardi/Whois-Alien-Bot")
-
-
-
- 
 bot_token = os.getenv("BOT_TOKEN")
 client.run(bot_token)
